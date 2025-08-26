@@ -1,0 +1,56 @@
+<body>
+  <pre class="mermaid">
+gantt
+    title PIP 2025
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+
+%%%%%%%%%%%%%%%%%%
+%%   Abgaben    %%
+%%%%%%%%%%%%%%%%%%
+
+section Abgaben
+
+Projektstart            : milestone,  m0,   2025-08-26,     0d
+Konzeption              : active,     k0,   after m0,       2025-09-04
+Abgabe Konzeption       : milestone,  m1,   2025-09-05,     0d
+Umsetzungsphase Spiel   :             g1,   2025-09-05,     2025-09-30
+Umsetzungsphase Website :             g2,   2025-09-05,     2025-09-30
+Abgabe Spiel            : milestone,  m2,   2025-09-30,     0d
+Abgabe Website          : milestone,  m3,   2025-09-30,     0d
+Umsetzung Trailer       :             g2,   2025-10-01,     2025-10-07 
+Abgabe Trailer          : milestone,  m4,   2025-10-07,     0d
+Präsentation            : milestone,  m5,   2025-10-07,     0d
+
+
+%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%
+%%    Assets    %%
+%%%%%%%%%%%%%%%%%%
+
+section Asset Creation and Design
+
+
+%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%
+%% Programming  %%
+%%%%%%%%%%%%%%%%%%
+
+section Programmierung
+
+%%%%%%%%%%%%%%%%%%
+  </pre>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs' ;
+    mermaid.initialize( { startOnLoad: true, securityLevel: 'loose', } ) ;
+  </script>
+
+  <script>
+    const callback = function () {
+      alert('A callback was triggered');
+    };
+  </script>
+</body>
