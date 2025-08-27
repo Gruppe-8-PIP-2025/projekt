@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -18,7 +19,7 @@ public class WorldManager : MonoBehaviour
   /// </summary>
   public void SceneTransition()
   {
-
+    Debug.LogException(new NotImplementedException("SceneTransition is not yet implemented."));
   }
 
   /// <summary>
@@ -28,7 +29,7 @@ public class WorldManager : MonoBehaviour
   /// </summary>
   public void LoadUserSettings()
   {
-
+    Debug.LogException(new NotImplementedException("LoadUserSettings is not yet implemented."));
   }
 
   /// <summary>
@@ -42,7 +43,7 @@ public class WorldManager : MonoBehaviour
   /// </remarks>
   public void PauseGame()
   {
-
+    Debug.LogException(new NotImplementedException("PauseGame is not yet implemented."));
   }
 
   /// <summary>
@@ -50,7 +51,7 @@ public class WorldManager : MonoBehaviour
   /// </summary>
   public void AdoptSceneManager()
   {
-
+    Debug.LogException(new NotImplementedException("AdoptSceneManager is not yet implemented."));
   }
 
 
