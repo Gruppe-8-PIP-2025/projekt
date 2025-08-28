@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// WorldManager is the sole persistent object that follows the player between
@@ -17,8 +18,10 @@ public class WorldManager : MonoBehaviour
   /// SceneManager and attempt to find and adopt the local SceneManager upon
   /// arrival.
   /// </summary>
-  public void SceneTransition()
+  public void SceneTransition(string sceneName)
   {
+    /// display load screen here
+    SceneManager.LoadScene(sceneName);
     Debug.LogException(new NotImplementedException("SceneTransition is not yet implemented."));
   }
 
