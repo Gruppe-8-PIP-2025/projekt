@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-public class LoadingScreenProgressBar : MonoBehaviour
+public class LoadingScreenWidget : MonoBehaviour
 {
   [Header("Progress Indicators")]
   [SerializeField] private List<GameObject> ProgresIndicators;
@@ -14,13 +13,16 @@ public class LoadingScreenProgressBar : MonoBehaviour
   {
     get
     {
-      return ProgresIndicators.Select(pi => pi.GetComponent<RawImage>()).ToList();
+      return ProgresIndicators
+        .Select(pi => pi.GetComponent<RawImage>())
+          .ToList();
     }
   }
 
-  /// <summary>
-  /// 
-  /// </summary>
+  /// <remarks>This method should be called by WorldManager during scene-
+  /// transition.</remarks>
+  /// <summary>Updates the ProgressBar UI-Element with the current progress of
+  /// the scene being loaded.</summary>
   /// <param name="progress">a number between 0.0 and 1.0 that represents
   /// how much of the next scene has been loaded</param>
   public void UpdateProgress(float progress)
@@ -38,19 +40,5 @@ public class LoadingScreenProgressBar : MonoBehaviour
     {
       RawImages[i].enabled = i < enabledIndicators;
     }
-  }
-
-  // Start is called once before the first execution of Update after the MonoBehaviour is created
-  void Start()
-  {
-    
-  }
-
-  // Update is called once per frame
-  void Update()
-  {
-    /* Test */
-    UpdateProgress(0.8f);
-    /* Test */
   }
 }
