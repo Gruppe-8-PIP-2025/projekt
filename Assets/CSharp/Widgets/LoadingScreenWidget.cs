@@ -6,9 +6,14 @@ using UnityEngine.UI;
 
 public class LoadingScreenWidget : MonoBehaviour
 {
+
+  #region Component Configuration
   [Header("Progress Indicators")]
   [SerializeField] private List<GameObject> ProgresIndicators;
+  #endregion
 
+
+  #region Properties
   private List<RawImage> RawImages
   {
     get
@@ -18,7 +23,10 @@ public class LoadingScreenWidget : MonoBehaviour
           .ToList();
     }
   }
+  #endregion
 
+
+  #region Public Methods
   /// <remarks>This method should be called by WorldManager during scene-
   /// transition.</remarks>
   /// <summary>Updates the ProgressBar UI-Element with the current progress of
@@ -35,10 +43,11 @@ public class LoadingScreenWidget : MonoBehaviour
       );
     }
 
-    int enabledIndicators = (int) Math.Round(ProgresIndicators.Count * progress);
+    int enabledIndicators = (int)Math.Round(ProgresIndicators.Count * progress);
     for (int i = 0; i < RawImages.Count; i++)
     {
       RawImages[i].enabled = i < enabledIndicators;
     }
   }
+  #endregion
 }
