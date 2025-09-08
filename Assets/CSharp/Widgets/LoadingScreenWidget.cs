@@ -35,7 +35,7 @@ public class LoadingScreenWidget : MonoBehaviour
       );
     }
 
-    int enabledIndicators = (int)Math.Round(ProgresIndicators.Count * progress);
+    int enabledIndicators = (int) Math.Round(ProgresIndicators.Count * progress);
     for (int i = 0; i < RawImages.Count; i++)
     {
       RawImages[i].enabled = i < enabledIndicators;
