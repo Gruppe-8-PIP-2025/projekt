@@ -116,8 +116,8 @@ namespace Zeus.RTSCamera
             InputAxis horizontalAxis = OrbitalFollow.HorizontalAxis;
             InputAxis verticalAxis = OrbitalFollow.VerticalAxis;
 
-            horizontalAxis.Value = Mathf.Lerp(horizontalAxis.Value, horizontalAxis.Value + orbitInput.x, OrbitSmoothing * deltaTime);
-            verticalAxis.Value = Mathf.Lerp(verticalAxis.Value, verticalAxis.Value - orbitInput.y, OrbitSmoothing * deltaTime);
+           // horizontalAxis.Value = Mathf.Lerp(horizontalAxis.Value, horizontalAxis.Value + orbitInput.x, OrbitSmoothing * deltaTime);
+           // verticalAxis.Value = Mathf.Lerp(verticalAxis.Value, verticalAxis.Value - orbitInput.y, OrbitSmoothing * deltaTime);
 
             verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, verticalAxis.Range.x, verticalAxis.Range.y);
 
@@ -137,6 +137,7 @@ namespace Zeus.RTSCamera
             axis.Value -= CurrentZoomSpeed * deltaTime;
             Debug.Log($"Axis value (unclamped): {axis.Value}");
             // axis.Value = Mathf.Clamp(axis.Value, axis.Range.x, axis.Range.y);
+            // Debug.Log($"Axis value post-clamp: {axis.Value}");
             OrbitalFollow.RadialAxis = axis;
         }
 
