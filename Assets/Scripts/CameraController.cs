@@ -137,7 +137,6 @@ namespace Zeus.RTSCamera
             axis.Value -= CurrentZoomSpeed * deltaTime;
             Debug.Log($"Axis value (unclamped): {axis.Value}");
             // axis.Value = Mathf.Clamp(axis.Value, axis.Range.x, axis.Range.y);
-            // Debug.Log($"Axis value post-clamp: {axis.Value}");
             OrbitalFollow.RadialAxis = axis;
         }
 
