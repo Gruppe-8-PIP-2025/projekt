@@ -67,16 +67,20 @@ public class LoadingScreenWidget : MonoBehaviour
   public void SetLoadingInfoText(string value)
     => LoadingInfo.SetText(value);
   #endregion
-  
+
 
   #region MonoBehavior
   public void Start()
   {
+    DontDestroyOnLoad(gameObject);
+
     UpdateProgress(0.0f);
     SetLoadingInfoText(DEFAULT_LOADINGINFO);
     SetTipsAndTricksText(DEFAULT_TIPSANDTRICKS);
 
     //TestBattery1();
+
+    gameObject.SetActive(false);
   }
   #endregion
 

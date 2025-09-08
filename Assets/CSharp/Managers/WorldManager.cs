@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +10,17 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class WorldManager : MonoBehaviour
 {
+  #region Constants
+  private const float TRANSITION_TIME_MINIMUM = 1.66f;
+  private const string SCENETRANSTIONTEST = "SceneTransitionTest";
+  #endregion
+
+  #region Component Configuration
+  [Header("Scene Transitions")]
+  [SerializeField] private GameObject LoadingScreen;
+  #endregion
+
+
   private SessionStatistics sessionStatistics;
   private GameFlagManager gameFlagManager;
   private SceneManager sceneManager;
@@ -20,9 +33,7 @@ public class WorldManager : MonoBehaviour
   /// </summary>
   public void SceneTransition(string sceneName)
   {
-    /// display load screen here
-    SceneManager.LoadScene(sceneName);
-    Debug.LogException(new NotImplementedException("SceneTransition is not yet implemented."));
+    StartCoroutine(nameof(LoadScene), sceneName);
   }
 
   /// <summary>
@@ -57,8 +68,42 @@ public class WorldManager : MonoBehaviour
     Debug.LogException(new NotImplementedException("AdoptSceneManager is not yet implemented."));
   }
 
+  #region Coroutines
+  private IEnumerator LoadScene(string value)
+  {
+    float timer = 0.0f;
 
+    // Delay to avoid timing conflicts when testing scene-change on startup.
+    if (value == SCENETRANSTIONTEST)
+    {
+      while (timer < 3.0f)
+      {
+        timer += Time.deltaTime;
+        yield return null;
+      }
+    }
+  
+    LoadingScreen.SetActive(true);
+    LoadingScreenWidget loadingScreenWidget = LoadingScreen.GetComponent<LoadingScreenWidget>();
 
+    AsyncOperation asyncLoadScene = SceneManager.LoadSceneAsync(value);
+    asyncLoadScene.allowSceneActivation = false;
+    timer = 0.0f;
+
+    while (asyncLoadScene.progress < 0.9f || timer < TRANSITION_TIME_MINIMUM)
+    {
+      loadingScreenWidget.UpdateProgress(asyncLoadScene.progress);
+      timer += Time.deltaTime;
+      yield return null;
+    }
+
+    asyncLoadScene.allowSceneActivation = true;
+    LoadingScreen.SetActive(false);
+  }
+  #endregion
+
+  //SceneTransitionTest
+  #region MonoBehavior
   /// <summary>
   /// Start is called once before the first execution of Update after the
   /// MonoBehaviour is created
@@ -66,6 +111,17 @@ public class WorldManager : MonoBehaviour
   void Start()
   {
     DontDestroyOnLoad(gameObject);
-    sessionStatistics = new ();
+    sessionStatistics = new();
+
+    SceneTransitonTest();
   }
+  #endregion
+
+
+  #region Test/Debug
+  private void SceneTransitonTest()
+  {
+    SceneTransition(SCENETRANSTIONTEST);
+  }
+  #endregion
 }

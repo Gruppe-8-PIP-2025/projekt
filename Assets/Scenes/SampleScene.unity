@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2553ce919482b044b27853f5d133ce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LoadingScreen: {fileID: 151909390}
 --- !u!4 &47242018
 Transform:
   m_ObjectHideFlags: 0
@@ -163,6 +164,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &151909390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2117042705750335240, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
+  m_PrefabInstance: {fileID: 3874197443674266596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,6 +621,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &1994343725 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7858931695545366216, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
+  m_PrefabInstance: {fileID: 3874197443674266596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2032456511 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3552258011166378032, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
@@ -665,6 +676,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 2117042705750335240, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7239874198522862208, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
@@ -673,6 +688,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7858931695545366216, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8154078369753849736, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
+      propertyPath: Canvas
+      value: 
+      objectReference: {fileID: 1994343725}
     - target: {fileID: 8154078369753849736, guid: 3d7409f7b99710e4a8a1835e7192fbef, type: 3}
       propertyPath: LoadingInfo
       value: 
