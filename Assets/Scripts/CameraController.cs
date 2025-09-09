@@ -26,6 +26,14 @@ namespace Zeus.RTSCamera
             {
                 CameraTarget.position += new Vector3(0, 2f, 0);
             }
+
+            if (Map != null)
+            {
+                // Berechne Bounds anhand von Position + Scale
+                Vector3 size = Vector3.Scale(Map.localScale, new Vector3(10f, 1f, 10f));
+                // Unity Plane ist 10x10, deshalb *10
+                mapBounds = new Bounds(Map.position, size);
+            }
         }
 
         private void Awake()
@@ -75,6 +83,10 @@ namespace Zeus.RTSCamera
         [Header("Orbit")]
         [SerializeField] float OrbitSensitivity = 1f;
         [SerializeField] float OrbitSmoothing = 5f;
+
+        [Header("Map")]
+        [SerializeField] Transform Map; // dein Map-Objekt (Plane/Terrain etc.)
+        Bounds mapBounds;
 
         [Header("Zoom")]
         [SerializeField] float ZoomSpeed = 0.5f;
@@ -134,9 +146,7 @@ namespace Zeus.RTSCamera
 
             float zoomMultiplier = MoveSpeedZoomCurve.Evaluate(ZoomLevel);
 
-            // 🆕 Sprint berücksichtigen
             float sprintMultiplier = sprintInput ? SprintSpeedMultiplier : 1f;
-
             Vector3 targetVelocity = inputVector * MoveSpeed * zoomMultiplier * sprintMultiplier;
 
             if (inputVector.sqrMagnitude > 0.01f)
@@ -146,9 +156,16 @@ namespace Zeus.RTSCamera
 
             Vector3 motion = Velocity * deltaTime;
             CameraTarget.position += forward * motion.z + right * motion.x;
-        }
 
-        void UpdateOrbit(float deltaTime)
+            if (Map != null)
+            {
+                Vector3 pos = CameraTarget.position;
+                pos.x = Mathf.Clamp(pos.x, mapBounds.min.x, mapBounds.max.x);
+                pos.z = Mathf.Clamp(pos.z, mapBounds.min.z, mapBounds.max.z);
+                CameraTarget.position = pos;
+            }
+        }
+            void UpdateOrbit(float deltaTime)
         {
             Vector2 orbitInput = lookInput * (middleClickInput ? 1f : 0f);
             orbitInput *= OrbitSensitivity;
