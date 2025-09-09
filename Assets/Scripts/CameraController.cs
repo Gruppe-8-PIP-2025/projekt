@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using Microsoft.Win32.SafeHandles;
 
 namespace Zeus.RTSCamera
 {
@@ -11,6 +12,21 @@ namespace Zeus.RTSCamera
         private Vector2 moveInput;
         private Vector2 lookInput;
         private bool middleClickInput = false;
+        private bool sprintInput = false; // 🆕 Sprint Flag
+
+        public void OnSprint(InputValue value) // 🆕 Input-System Callback
+        {
+            sprintInput = value.isPressed;
+        }
+        #endregion
+
+        private void Start()
+        {
+            if (CameraTarget != null)
+            {
+                CameraTarget.position += new Vector3(0, 2f, 0);
+            }
+        }
 
         private void Awake()
         {
@@ -42,14 +58,18 @@ namespace Zeus.RTSCamera
         {
             lookInput = value.Get<Vector2>();
         }
-        #endregion
 
         [Header("Movement")]
         [SerializeField] float MoveSpeed = 1000f;
-
         [SerializeField] float Acceleration = 10f;
         [SerializeField] float Deceleration = 10f;
+        [SerializeField] AnimationCurve MoveSpeedZoomCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
+        [SerializeField] float SprintSpeedMultiplier = 2f; // 🆕 Sprint-Faktor
 
+        [Space(10)]
+        //[SerializeField] float EdgeScrollingMargin = 0f;
+
+        Vector2 edgeScrollInput;
         Vector3 Velocity = Vector3.zero;
 
         [Header("Orbit")]
@@ -62,12 +82,21 @@ namespace Zeus.RTSCamera
 
         float CurrentZoomSpeed = 0f;
 
+        public float ZoomLevel // value between 0 (zoomed in) and 1 (zoomed out)
+        {
+            get
+            {
+                InputAxis axis = OrbitalFollow.RadialAxis;
+                return Mathf.InverseLerp(axis.Range.x, axis.Range.y, axis.Value);
+            }
+        }
+
         [Header("Components")]
         [SerializeField] Transform CameraTarget;
         [SerializeField] CinemachineOrbitalFollow OrbitalFollow;
 
         #region Unity Methods
-        private void Update()
+        private void LateUpdate()
         {
             float deltaTime = Time.unscaledDeltaTime;
 
@@ -97,9 +126,20 @@ namespace Zeus.RTSCamera
             right.y = 0f;
             right.Normalize();
 
-            Vector3 targetVelocity = new Vector3(moveInput.x, 0, moveInput.y) * MoveSpeed;
+            Vector3 inputVector = new Vector3(moveInput.x + edgeScrollInput.x, 0,
+                                   moveInput.y + edgeScrollInput.y);
 
-            if (moveInput.sqrMagnitude > 0.01f)
+            if (inputVector.sqrMagnitude > 1f)
+                inputVector.Normalize();
+
+            float zoomMultiplier = MoveSpeedZoomCurve.Evaluate(ZoomLevel);
+
+            // 🆕 Sprint berücksichtigen
+            float sprintMultiplier = sprintInput ? SprintSpeedMultiplier : 1f;
+
+            Vector3 targetVelocity = inputVector * MoveSpeed * zoomMultiplier * sprintMultiplier;
+
+            if (inputVector.sqrMagnitude > 0.01f)
                 Velocity = Vector3.MoveTowards(Velocity, targetVelocity, Acceleration * deltaTime);
             else
                 Velocity = Vector3.MoveTowards(Velocity, Vector3.zero, Deceleration * deltaTime);
@@ -116,10 +156,19 @@ namespace Zeus.RTSCamera
             InputAxis horizontalAxis = OrbitalFollow.HorizontalAxis;
             InputAxis verticalAxis = OrbitalFollow.VerticalAxis;
 
-           horizontalAxis.Value = Mathf.Lerp(horizontalAxis.Value, horizontalAxis.Value + orbitInput.x, OrbitSmoothing * deltaTime);
-           // verticalAxis.Value = Mathf.Lerp(verticalAxis.Value, verticalAxis.Value - orbitInput.y, OrbitSmoothing * deltaTime);
+            // Horizontal bewegen
+            horizontalAxis.Value = Mathf.Lerp(
+                horizontalAxis.Value,
+                horizontalAxis.Value + orbitInput.x,
+                OrbitSmoothing * deltaTime
+            );
 
-            verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, verticalAxis.Range.x, verticalAxis.Range.y);
+            // Dynamische Begrenzung abhängig vom ZoomLevel
+            float zoomLevel = ZoomLevel; // 0 = nah, 1 = weit
+            float minVerticalAngle = 20f;
+            float maxVerticalAngle = Mathf.Lerp(40f, 80f, zoomLevel);
+
+            verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, minVerticalAngle, maxVerticalAngle);
 
             OrbitalFollow.HorizontalAxis = horizontalAxis;
             OrbitalFollow.VerticalAxis = verticalAxis;
@@ -129,18 +178,17 @@ namespace Zeus.RTSCamera
         {
             InputAxis axis = OrbitalFollow.RadialAxis;
 
-            // Zielgeschwindigkeit nur setzen, wenn wirklich gescrollt wird
             float targetZoomSpeed = Mathf.Abs(scroll) > 0.01f ? ZoomSpeed * scroll : 0f;
-
             CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, targetZoomSpeed, ZoomSmoothing * deltaTime);
 
             axis.Value -= CurrentZoomSpeed * deltaTime;
-            Debug.Log($"Axis value (unclamped): {axis.Value}");
-            // axis.Value = Mathf.Clamp(axis.Value, axis.Range.x, axis.Range.y);
-            // Debug.Log($"Axis value post-clamp: {axis.Value}");
+
+            // Minimaler Abstand
+            float minZoom = axis.Range.x + 2f;
+            axis.Value = Mathf.Clamp(axis.Value, minZoom, axis.Range.y);
+
             OrbitalFollow.RadialAxis = axis;
         }
-
         #endregion
     }
 }
