@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 389122101846112940}
+  - component: {fileID: 8851032023175386775}
   m_Layer: 0
   m_Name: HousePrefab2X2
   m_TagString: Untagged
@@ -32,6 +33,27 @@ Transform:
   - {fileID: 683510554627561501}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8851032023175386775
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462970915838219841}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.265136, y: 5.6905007, z: 4.9874067}
+  m_Center: {x: 0.01537919, y: 2.8480232, z: -0.016826391}
 --- !u!1001 &1078304552953004022
 PrefabInstance:
   m_ObjectHideFlags: 0
