@@ -119,28 +119,32 @@ public class CameraController : MonoBehaviour
     }
   }
 
-  /// <summary>
-  /// 
-  /// </summary>
-  /// <param name="deltaTime">time passed since last update</param>
-  private void UpdateZoom(float deltaTime)
-  {
-    if (Mathf.Abs(scrollInput.y) < 0.01f)
-      return;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="deltaTime">time passed since last update</param>
+    private void UpdateZoom(float deltaTime)
+    {
+        if (Mathf.Abs(scrollInput.y) < 0.01f)
+            return;
 
-    float targetZoomSpeed = ZoomSpeed * scrollInput.y;
+        // Desired zoom change (scaled by scroll speed)
+        float zoomChange = scrollInput.y * ZoomSpeed;
 
-    CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, targetZoomSpeed, ZoomSmoothing * deltaTime);
+        // Smooth interpolation of zoom speed
+        CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, zoomChange, ZoomSmoothing * deltaTime);
 
-    OrbitalFollow.RadialAxis.Value -= CurrentZoomSpeed * deltaTime;
+        // Apply zoom
+        float newZoom = OrbitalFollow.RadialAxis.Value - CurrentZoomSpeed * deltaTime;
 
-    OrbitalFollow.RadialAxis.Value = Mathf.Clamp(OrbitalFollow.RadialAxis.Value, ZoomClosest, ZoomFurthest);
-  }
-  #endregion
+        // Clamp between min and max
+        OrbitalFollow.RadialAxis.Value = Mathf.Clamp(newZoom, ZoomClosest, ZoomFurthest);
+    }
+    #endregion
 
 
-  #region MonoBehavior
-  private void Start()
+    #region MonoBehavior
+    private void Start()
   {
     if (CameraTarget != null)
     {
