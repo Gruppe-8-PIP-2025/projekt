@@ -1,0 +1,46 @@
+<body>
+  <pre class="mermaid">
+flowchart TD
+    A["PIP 2025<br/>0"] --- B["KONZEPTION<br/>0.0"] & D["PROGRAMMIERUNG<br/>0.1"] & E["ASSET DESIGN<br/>0.2"] & F["PRÄSENTATION<br/>0.3"]
+    
+    B  --- B1["Themenfindung<br/>0.0.0"]
+    B1 --- B2["Ausarbeitung<br/>Gameplay Konzept
+<br/>0.0.1"]
+    B2 --- B3["Ausarbeitung<br/>Story-Ansatz<br/>0.0.2"]
+    B3 --- B4["Konzept-Art<br/>und Style-Ansätze<br/>0.0.3"]
+    B4 --- B5["Projektstrukturplan<br/>0.0.4"]
+    B5 --- B6["Abgabe Konzept-<br/>dokument<br/>0.0.5"]
+
+    D  --- C1["INTERNAL API<br/>0.1.0"]
+    D  --- C2["PLAY DESIGN<br/>0.1.1"]
+    
+    C1 --- C10["Klassendiagramm<br/>zur Übersicht<br/>0.1.0.0"]
+    C10 --- C11["Kamera Controller<br/>0.1.0.1"]
+    C11 --- C12["Interface Prototype<br/>0.1.0.2"]
+    C12 --- C13["Entity Prototypes<br/>0.1.0.3"]
+    C13 --- C14["Entity Placement<br/>0.1.0.4"]
+    C14 --- C15["Dialogue System<br/>0.1.0.5"]
+    
+    C2 --- C20["Entity Interaction<br/>0.1.1.0"]
+    C20 --- C21["Scene Transition<br/>0.1.1.1"]
+    C21 --- C22["Serialization<br/>0.1.1.2"]
+    C22 --- C23["User Settings<br/>Configuration<br/>0.1.1.3"]
+    C23 --- C24["Metrics and<br/>Tracking Data<br/>0.1.1.4"]
+    
+    E  --- G1["2D ASSETS<br/>0.2.0"]
+    E  --- G2["3D ASSETS<br/>0.2.1"]
+    E  --- G3["AUDIO ASSETS<br/>0.2.2"]
+    E  --- G4["WEB DESIGN<br/>0.2.3"]
+  </pre>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs' ;
+    mermaid.initialize( { startOnLoad: true, securityLevel: 'loose', } ) ;
+  </script>
+
+  <script>
+    const callback = function () {
+      alert('A callback was triggered');
+    };
+  </script>
+</body>
