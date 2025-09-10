@@ -12,7 +12,8 @@ public class WorldManager : MonoBehaviour
 {
   #region Constants
   private const float TRANSITION_TIME_MINIMUM = 0.66f;
-  private const string SCENETRANSTIONTEST = "SceneTransitionTest";
+  private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
+  private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
   #region Component Configuration
@@ -74,9 +75,9 @@ public class WorldManager : MonoBehaviour
     float timer = 0.0f;
 
     // Delay to avoid timing conflicts when testing scene-change on startup.
-    if (value == SCENETRANSTIONTEST)
+    if (value == SCENETRANSTIONTESTTARGET)
     {
-      while (timer < 3.0f)
+      while (timer < 1.0f)
       {
         timer += Time.deltaTime;
         yield return null;
@@ -121,7 +122,7 @@ public class WorldManager : MonoBehaviour
   #region Test/Debug
   private void SceneTransitonTest()
   {
-    SceneTransition(SCENETRANSTIONTEST);
+    SceneTransition(SCENETRANSTIONTESTTARGET);
   }
   #endregion
 }
