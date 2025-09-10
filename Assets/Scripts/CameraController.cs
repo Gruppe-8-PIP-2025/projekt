@@ -12,12 +12,12 @@ namespace Zeus.RTSCamera
         private Vector2 moveInput;
         private Vector2 lookInput;
         private bool middleClickInput = false;
-        private bool sprintInput = false; // 🆕 Sprint Flag
+        //private bool sprintInput = false; // 🆕 Sprint Flag
 
-        public void OnSprint(InputValue value) // 🆕 Input-System Callback
-        {
-            sprintInput = value.isPressed;
-        }
+        //public void OnSprint(InputValue value) // 🆕 Input-System Callback
+        //{
+        //    sprintInput = value.isPressed;
+        //}
         #endregion
 
         private void Start()
@@ -146,8 +146,8 @@ namespace Zeus.RTSCamera
 
             float zoomMultiplier = MoveSpeedZoomCurve.Evaluate(ZoomLevel);
 
-            float sprintMultiplier = sprintInput ? SprintSpeedMultiplier : 1f;
-            Vector3 targetVelocity = inputVector * MoveSpeed * zoomMultiplier * sprintMultiplier;
+            //  float sprintMultiplier = sprintInput ? SprintSpeedMultiplier : 1f;
+            Vector3 targetVelocity = inputVector * MoveSpeed * zoomMultiplier; //sprintMultiplier;
 
             if (inputVector.sqrMagnitude > 0.01f)
                 Velocity = Vector3.MoveTowards(Velocity, targetVelocity, Acceleration * deltaTime);
@@ -173,37 +173,36 @@ namespace Zeus.RTSCamera
             InputAxis horizontalAxis = OrbitalFollow.HorizontalAxis;
             InputAxis verticalAxis = OrbitalFollow.VerticalAxis;
 
-            // Horizontal bewegen
-            horizontalAxis.Value = Mathf.Lerp(
-                horizontalAxis.Value,
-                horizontalAxis.Value + orbitInput.x,
-                OrbitSmoothing * deltaTime
-            );
+            //// Horizontal bewegen
+            //horizontalAxis.Value = Mathf.Lerp(
+            //    horizontalAxis.Value,
+            //    horizontalAxis.Value + orbitInput.x,
+            //    OrbitSmoothing * deltaTime
+            //);
 
             // Dynamische Begrenzung abhängig vom ZoomLevel
             float zoomLevel = ZoomLevel; // 0 = nah, 1 = weit
             float minVerticalAngle = 20f;
             float maxVerticalAngle = Mathf.Lerp(40f, 80f, zoomLevel);
 
-            verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, minVerticalAngle, maxVerticalAngle);
+          //  verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, minVerticalAngle, maxVerticalAngle);
 
             OrbitalFollow.HorizontalAxis = horizontalAxis;
             OrbitalFollow.VerticalAxis = verticalAxis;
         }
-
         void UpdateZoom(float deltaTime, float scroll)
         {
             InputAxis axis = OrbitalFollow.RadialAxis;
 
+            // Zielgeschwindigkeit nur setzen, wenn wirklich gescrollt wird
             float targetZoomSpeed = Mathf.Abs(scroll) > 0.01f ? ZoomSpeed * scroll : 0f;
+
             CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, targetZoomSpeed, ZoomSmoothing * deltaTime);
 
             axis.Value -= CurrentZoomSpeed * deltaTime;
-
-            // Minimaler Abstand
-            float minZoom = axis.Range.x + 2f;
-            axis.Value = Mathf.Clamp(axis.Value, minZoom, axis.Range.y);
-
+            Debug.Log($"Axis value (unclamped): {axis.Value}");
+            // axis.Value = Mathf.Clamp(axis.Value, axis.Range.x, axis.Range.y);
+            // Debug.Log($"Axis value post-clamp: {axis.Value}");
             OrbitalFollow.RadialAxis = axis;
         }
         #endregion
