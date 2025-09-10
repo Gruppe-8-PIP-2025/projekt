@@ -10,9 +10,10 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class WorldManager : MonoBehaviour
 {
-  #region Constants
-  private const float TRANSITION_TIME_MINIMUM = 0.66f;
-  private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
+    #region Constants
+    private const float TRANSITION_TIME_MINIMUM = 0.66f;
+    private const float SCENETRANSITIONTESTDELAY = 2.0f;
+    private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
   private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
@@ -32,9 +33,9 @@ public class WorldManager : MonoBehaviour
   /// SceneManager and attempt to find and adopt the local SceneManager upon
   /// arrival.
   /// </summary>
-  public void SceneTransition(string sceneName)
+  public void SceneTransition(string gameScene)
   {
-    StartCoroutine(nameof(LoadScene), sceneName);
+    StartCoroutine(nameof(LoadScene), gameScene);
   }
 
   /// <summary>
@@ -77,7 +78,7 @@ public class WorldManager : MonoBehaviour
     // Delay to avoid timing conflicts when testing scene-change on startup.
     if (value == SCENETRANSTIONTESTTARGET)
     {
-      while (timer < 1.0f)
+      while (timer < SCENETRANSITIONTESTDELAY)
       {
         timer += Time.deltaTime;
         yield return null;
@@ -114,7 +115,7 @@ public class WorldManager : MonoBehaviour
     DontDestroyOnLoad(gameObject);
     sessionStatistics = new();
 
-    SceneTransitonTest();
+    //SceneTransitonTest();
   }
   #endregion
 
@@ -124,5 +125,6 @@ public class WorldManager : MonoBehaviour
   {
     SceneTransition(SCENETRANSTIONTESTTARGET);
   }
-  #endregion
+    #endregion
+
 }
