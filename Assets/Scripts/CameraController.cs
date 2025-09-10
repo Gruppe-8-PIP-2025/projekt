@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using Unity.Cinemachine;
 using Microsoft.Win32.SafeHandles;
 using static UnityEngine.InputSystem.InputAction;
+using System;
 
 public class CameraController : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class CameraController : MonoBehaviour
   [Header("Zoom")]
   [SerializeField] float ZoomSpeed = 0.5f;
   [SerializeField] float ZoomSmoothing = 5f;
+  [SerializeField] float ZoomClosest = 0.0f;
+  [SerializeField] float ZoomFurthest= 10.0f;
 
   [Header("Components")]
   [SerializeField] Transform CameraTarget;
@@ -26,9 +29,9 @@ public class CameraController : MonoBehaviour
   #endregion
 
   #region Misc Variables
-  private InputSystem_Actions inputActions;
   private Vector2 moveInput;
   private Vector2 lookInput;
+  private Vector2 scrollInput;
   private bool middleClickInput;
   Vector2 edgeScrollInput;
 
@@ -63,7 +66,7 @@ public class CameraController : MonoBehaviour
 
   public void OnScroll(CallbackContext ctx)
   {
-    UpdateZoom(Time.deltaTime, ctx.ReadValue<Vector2>().y);
+    scrollInput = ctx.ReadValue<Vector2>();
   }
 
   public void OnMiddleClick(CallbackContext ctx)
@@ -74,6 +77,11 @@ public class CameraController : MonoBehaviour
 
 
   #region Control Methods
+  // TODO: clean up movement
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="deltaTime">time passed since last update</param>
   private void UpdateMovement(float deltaTime)
   {
     Vector3 forward = Camera.main.transform.forward;
@@ -111,17 +119,22 @@ public class CameraController : MonoBehaviour
     }
   }
 
-  private void UpdateZoom(float deltaTime, float scroll)
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="deltaTime">time passed since last update</param>
+  private void UpdateZoom(float deltaTime)
   {
-    InputAxis axis = OrbitalFollow.RadialAxis;
+    if (Mathf.Abs(scrollInput.y) < 0.01f)
+      return;
 
-    // Zielgeschwindigkeit nur setzen, wenn wirklich gescrollt wird
-    float targetZoomSpeed = Mathf.Abs(scroll) > 0.01f ? ZoomSpeed * scroll : 0f;
+    float targetZoomSpeed = ZoomSpeed * scrollInput.y;
 
     CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, targetZoomSpeed, ZoomSmoothing * deltaTime);
 
-    axis.Value -= CurrentZoomSpeed * deltaTime;
-    OrbitalFollow.RadialAxis = axis;
+    OrbitalFollow.RadialAxis.Value -= CurrentZoomSpeed * deltaTime;
+
+    OrbitalFollow.RadialAxis.Value = Mathf.Clamp(OrbitalFollow.RadialAxis.Value, ZoomClosest, ZoomFurthest);
   }
   #endregion
 
@@ -158,6 +171,7 @@ public class CameraController : MonoBehaviour
     }
 
     UpdateMovement(deltaTime);
+    UpdateZoom(deltaTime);
   }
   #endregion
 }
