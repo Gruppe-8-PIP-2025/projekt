@@ -13,6 +13,7 @@ public class BuildingSystem : MonoBehaviour
 
     public GameObject prefab1;
     public GameObject prefab2;
+    public GameObject prefab3;
 
     private PlaceObject objectToPlace;
 
@@ -22,19 +23,25 @@ public class BuildingSystem : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton pattern
         current = this;
         grid = gridLayout.gameObject.GetComponent<Grid>();
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
+        // Handle input for placing different prefabs
+        if (Input.GetKeyDown(KeyCode.A)) 
         {
             InitializeWithObject(prefab1);
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
             InitializeWithObject(prefab2);
+        }
+        else if (Input.GetKeyDown(KeyCode.C)) 
+        {
+            InitializeWithObject(prefab3);
         }
     }
 
@@ -45,6 +52,7 @@ public class BuildingSystem : MonoBehaviour
 
     public static Vector3 GetMouseWorldPosition()
     {
+        // Create a ray from the camera to the mouse position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit raycastHit))
         {
@@ -58,6 +66,7 @@ public class BuildingSystem : MonoBehaviour
 
     public Vector3 SnapCoordinateToGrid(Vector3 position)
     {
+        // Convert the world position to a cell position and then back to the center of that cell
         Vector3Int cellPos = gridLayout.WorldToCell(position);
         position = grid.GetCellCenterWorld(cellPos);
         return position;
@@ -70,6 +79,7 @@ public class BuildingSystem : MonoBehaviour
 
     public void InitializeWithObject(GameObject prefab)
     {
+       
         Vector3 position = SnapCoordinateToGrid(Vector3.zero);
 
         GameObject obj = Instantiate(prefab, position, Quaternion.identity);
