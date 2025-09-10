@@ -13,11 +13,6 @@ public class CameraController : MonoBehaviour
   [SerializeField] float Deceleration = 10f;
   [SerializeField] AnimationCurve MoveSpeedZoomCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
 
-
-  [Header("Orbit")]
-  [SerializeField] float OrbitSensitivity = 1f;
-  [SerializeField] float OrbitSmoothing = 5f;
-
   [Header("Map")]
   [SerializeField] Transform Map; // dein Map-Objekt (Plane/Terrain etc.)
 
@@ -30,12 +25,11 @@ public class CameraController : MonoBehaviour
   [SerializeField] CinemachineOrbitalFollow OrbitalFollow;
   #endregion
 
-  #region Input
-
+  #region Misc Variables
   private InputSystem_Actions inputActions;
   private Vector2 moveInput;
   private Vector2 lookInput;
-  private bool middleClickInput = false;
+  private bool middleClickInput;
   Vector2 edgeScrollInput;
 
   float CurrentZoomSpeed = 0f;
@@ -43,16 +37,20 @@ public class CameraController : MonoBehaviour
   Bounds mapBounds;
   #endregion
 
-  private void OnEnable()
-  {
-    inputActions.Enable();
-  }
 
-  private void OnDisable()
+  #region Properties
+  public float ZoomLevel // value between 0 (zoomed in) and 1 (zoomed out)
   {
-    inputActions.Disable();
+    get
+    {
+      InputAxis axis = OrbitalFollow.RadialAxis;
+      return Mathf.InverseLerp(axis.Range.x, axis.Range.y, axis.Value);
+    }
   }
+  #endregion
+
   
+  #region InputSystem EventHandlers
   public void OnMove(CallbackContext ctx)
   {
     moveInput = ctx.ReadValue<Vector2>();
@@ -63,14 +61,16 @@ public class CameraController : MonoBehaviour
     lookInput = ctx.ReadValue<Vector2>();
   }
 
-  public float ZoomLevel // value between 0 (zoomed in) and 1 (zoomed out)
+  public void OnScroll(CallbackContext ctx)
   {
-    get
-    {
-      InputAxis axis = OrbitalFollow.RadialAxis;
-      return Mathf.InverseLerp(axis.Range.x, axis.Range.y, axis.Value);
-    }
+    UpdateZoom(Time.deltaTime, ctx.ReadValue<Vector2>().y);
   }
+
+  public void OnMiddleClick(CallbackContext ctx)
+  {
+    middleClickInput = ctx.ReadValueAsButton();
+  }
+  #endregion
 
 
   #region Control Methods
@@ -111,32 +111,6 @@ public class CameraController : MonoBehaviour
     }
   }
 
-  private void UpdateOrbit(float deltaTime)
-  {
-    Vector2 orbitInput = lookInput * (middleClickInput ? 1f : 0f);
-    orbitInput *= OrbitSensitivity;
-
-    InputAxis horizontalAxis = OrbitalFollow.HorizontalAxis;
-    InputAxis verticalAxis = OrbitalFollow.VerticalAxis;
-
-    /// Horizontal bewegen
-    //horizontalAxis.Value = Mathf.Lerp(
-    //    horizontalAxis.Value,
-    //    horizontalAxis.Value + orbitInput.x,
-    //    OrbitSmoothing * deltaTime
-    //);
-
-    // Dynamische Begrenzung abhängig vom ZoomLevel
-    float zoomLevel = ZoomLevel; // 0 = nah, 1 = weit
-    //float minVerticalAngle = 20f;
-    //float maxVerticalAngle = Mathf.Lerp(40f, 80f, zoomLevel);
-
-    //  verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, minVerticalAngle, maxVerticalAngle);
-
-    OrbitalFollow.HorizontalAxis = horizontalAxis;
-    OrbitalFollow.VerticalAxis = verticalAxis;
-  }
-
   private void UpdateZoom(float deltaTime, float scroll)
   {
     InputAxis axis = OrbitalFollow.RadialAxis;
@@ -169,15 +143,6 @@ public class CameraController : MonoBehaviour
     }
   }
 
-  private void Awake()
-  {
-    inputActions = new InputSystem_Actions();
-
-    inputActions.Player.ScrollWheel.performed += ctx =>
-    {
-      UpdateZoom(Time.deltaTime, ctx.ReadValue<Vector2>().y);
-    };
-  }
   private void LateUpdate()
   {
     float deltaTime = Time.unscaledDeltaTime;
@@ -192,7 +157,6 @@ public class CameraController : MonoBehaviour
         middleClickInput = false;
     }
 
-    UpdateOrbit(deltaTime);
     UpdateMovement(deltaTime);
   }
   #endregion
