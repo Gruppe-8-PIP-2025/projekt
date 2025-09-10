@@ -1,16 +1,17 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class MousePosition : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private LayerMask LayerMask;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit raycasthit))
+        {
+            transform.position = raycasthit.point;
+        }
     }
 }
