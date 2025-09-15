@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 
 public  class CursorUtility : MonoBehaviour
@@ -6,26 +7,31 @@ public  class CursorUtility : MonoBehaviour
     {
     private static Texture defaultCursorTexture = null;
 
+
+  public void PrintPosition2D(CallbackContext ctx)
+  {
+    Debug.Log($"Cursor is located at X:{CursorUtility.Position2D.x} Z:{CursorUtility.Position2D.y}");
+  }
     
     public static Vector2 Position2D
+  {
+    get
     {
-        get
-        {
-            Camera cam = Camera.main;
-            if (cam == null) return Vector2.zero;
+      Camera cam = Camera.main;
+      if (cam == null) return Vector2.zero;
 
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+      Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+      Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
 
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                return new Vector2(hitPoint.x, hitPoint.z);
-            }
+      if (groundPlane.Raycast(ray, out float enter))
+      {
+        Vector3 hitPoint = ray.GetPoint(enter);
+        return new Vector2(hitPoint.x, hitPoint.z);
+      }
 
-            return Vector2.zero;
-        }
+      return Vector2.zero;
     }
+  }
 
     
     
@@ -37,7 +43,7 @@ public  class CursorUtility : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CursorUtility: Unity unterstützt nur Texture2D für Cursor.SetCursor(). Falls du ein Sprite hast, musst du dessen Texture2D verwenden.");
+            Debug.LogWarning("CursorUtility: Unity unterstï¿½tzt nur Texture2D fï¿½r Cursor.SetCursor(). Falls du ein Sprite hast, musst du dessen Texture2D verwenden.");
         }
     }
 
