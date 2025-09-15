@@ -1,8 +1,9 @@
 using UnityEngine;
 
 
-public static class CursorUtility
-{
+public  class CursorUtility : MonoBehaviour
+    
+    {
     private static Texture defaultCursorTexture = null;
 
     
@@ -26,6 +27,7 @@ public static class CursorUtility
         }
     }
 
+    
     
     public static void SetCursorTexture(Texture texture)
     {
