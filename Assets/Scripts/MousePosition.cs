@@ -1,4 +1,6 @@
 using System.Runtime.CompilerServices;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MousePosition : MonoBehaviour
@@ -9,9 +11,9 @@ public class MousePosition : MonoBehaviour
     private void Update()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit raycasthit))
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, LayerMask))
         {
-            transform.position = raycasthit.point;
+            transform.position = raycastHit.point;
         }
     }
 }
