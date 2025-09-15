@@ -27,12 +27,13 @@ Präsentation            : milestone,  m5,   2025-10-07,     0d
 section Programmierung
 
 WorldManager           : worldmanager, 2025-08-27, 2025-09-10
-GridManager            : active, gridmanager, 2025-08-27, 15d
-CameraController       : cameracontroller, 2025-08-27, 15d
+GridManager            : active, gridmanager, 2025-08-27, 18d
+CameraController       : cameracontroller, 2025-08-27, 18d
 LoadManager            : loadmanager, 2025-09-08, 2025-09-10
 CursorUtility          : active, cursorutility, 2025-09-12, 5d
 MenuSystem             : active, menusystem, 2025-09-08, 10d
 UserHUDInterface       : userhudinterface, after menusystem, 5d
-BuildingManager        : buildingmanager, after gridmanager cameracontroller, 5d
-
+PrototypePlaceables    : prototypeplaceables, after gridmanager cameracontroller, 2d 
+BuildingManager        : buildingmanager, after prototypeplaceables, 3d
+Placeables             : placeables, after buildingmanager, 5d
 ```
