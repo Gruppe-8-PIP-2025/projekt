@@ -14,7 +14,7 @@ public class WorldManager : MonoBehaviour
     private const float TRANSITION_TIME_MINIMUM = 2.0f;
     private const float SCENETRANSITIONTESTDELAY = 2.0f;
     private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
-  private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
+    private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
   #region Component Configuration
@@ -22,18 +22,33 @@ public class WorldManager : MonoBehaviour
   [SerializeField] private GameObject LoadingScreen;
   #endregion
 
+  #region MenuSystem Configs
+  [Header("Menu System")]
+  [SerializeField] private MenuSystem menusystem;
+  #endregion
+
 
   private SessionStatistics sessionStatistics;
   private GameFlagManager gameFlagManager;
   private SceneManager sceneManager;
 
-  /// <summary>
-  /// Initiates the process of moving the user to a different scene, utilizing a
-  /// loading screen where applicable. This will disinherit the current
-  /// SceneManager and attempt to find and adopt the local SceneManager upon
-  /// arrival.
-  /// </summary>
-  public void SceneTransition(string gameScene)
+    public void QuitGame()
+    {
+    #if  UNITY_EDITOR
+         UnityEditor.EditorApplication.isPlaying = false;
+    #else
+         Application.Quit();
+    #endif
+    }
+
+
+    /// <summary>
+    /// Initiates the process of moving the user to a different scene, utilizing a
+    /// loading screen where applicable. This will disinherit the current
+    /// SceneManager and attempt to find and adopt the local SceneManager upon
+    /// arrival.
+    /// </summary>
+    public void SceneTransition(string gameScene)
   {
     StartCoroutine(nameof(LoadScene), gameScene);
   }
@@ -103,6 +118,8 @@ public class WorldManager : MonoBehaviour
     LoadingScreen.SetActive(false);
   }
   #endregion
+
+
 
   //SceneTransitionTest
   #region MonoBehavior
