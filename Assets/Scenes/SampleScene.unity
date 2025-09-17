@@ -670,11 +670,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  OrbitSensitivity: 0.5
-  OrbitSmoothing: 10
-  Map: {fileID: 0}
-  ZoomSpeed: 15
-  ZoomSmoothing: 25
+  Map: {fileID: 947683188}
+  ZoomSpeed: 10
+  ZoomSmoothing: 5
+  ZoomClosest: 10
+  ZoomFurthest: 30
   CameraTarget: {fileID: 1012290341}
   OrbitalFollow: {fileID: 770644569}
 --- !u!114 &901514875
@@ -806,6 +806,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 896eae42-5a2d-4859-92a7-2b1c5308fe51
     m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7a9ae6e9-dee9-4b41-977a-b21a5cb19006
+    m_ActionName: 'Player/MiddleClick[/Mouse/middleButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player

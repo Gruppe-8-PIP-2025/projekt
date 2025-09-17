@@ -128,39 +128,45 @@ public class CameraController : MonoBehaviour
         if (Mathf.Abs(scrollInput.y) < 0.01f)
             return;
 
-        // Desired zoom change (scaled by scroll speed)
         float zoomChange = scrollInput.y * ZoomSpeed;
-
-        // Smooth interpolation of zoom speed
         CurrentZoomSpeed = Mathf.Lerp(CurrentZoomSpeed, zoomChange, ZoomSmoothing * deltaTime);
 
-        // Apply zoom
         float newZoom = OrbitalFollow.RadialAxis.Value - CurrentZoomSpeed * deltaTime;
-
-        // Clamp between min and max
         OrbitalFollow.RadialAxis.Value = Mathf.Clamp(newZoom, ZoomClosest, ZoomFurthest);
+
+        // Clamp
+        newZoom = Mathf.Clamp(newZoom, ZoomClosest, ZoomFurthest);
+
+        // Direkt setzen
+        OrbitalFollow.RadialAxis.Value = newZoom;
     }
     #endregion
 
 
     #region MonoBehavior
     private void Start()
-  {
-    if (CameraTarget != null)
     {
-      CameraTarget.position += new Vector3(0, 2f, 0);
+        if (OrbitalFollow != null)
+        {
+            // Deaktiviere automatisches Input-Mapping
+            //OrbitalFollow.RadialAxis.Name = string.Empty;
+        }
+
+        if (CameraTarget != null)
+        {
+            CameraTarget.position += new Vector3(0, 2f, 0);
+        }
+
+        if (Map != null)
+        {
+            Vector3 size = Vector3.Scale(Map.localScale, new Vector3(10f, 1f, 10f));
+            mapBounds = new Bounds(Map.position, size);
+        }
     }
 
-    if (Map != null)
-    {
-      // Berechne Bounds anhand von Position + Scale
-      Vector3 size = Vector3.Scale(Map.localScale, new Vector3(10f, 1f, 10f));
-      // Unity Plane ist 10x10, deshalb *10
-      mapBounds = new Bounds(Map.position, size);
-    }
-  }
 
-  private void LateUpdate()
+
+    private void LateUpdate()
   {
     float deltaTime = Time.unscaledDeltaTime;
 
