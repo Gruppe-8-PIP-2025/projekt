@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class WorldManager : MonoBehaviour
 {
     #region Constants
-    private const float TRANSITION_TIME_MINIMUM = 0.66f;
+    private const float TRANSITION_TIME_MINIMUM = 2.0f;
     private const float SCENETRANSITIONTESTDELAY = 2.0f;
     private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
   private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
