@@ -22,7 +22,7 @@ public class WorldManager : MonoBehaviour
   [SerializeField] private GameObject LoadingScreen;
   #endregion
 
-  #region MenuSystem Configs
+  #region MenuSystem Link
   [Header("Menu System")]
   [SerializeField] private MenuSystem menusystem;
   #endregion
