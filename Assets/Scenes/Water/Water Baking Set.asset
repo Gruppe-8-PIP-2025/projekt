@@ -125,5 +125,5 @@ MonoBehaviour:
     - hasProbeVolume: 1
       bakeScene: 1
       bounds:
-        m_Center: {x: 486, y: -40.5, z: 486}
-        m_Extent: {x: 567, y: 40.5, z: 567}
+        m_Center: {x: NaN, y: NaN, z: NaN}
+        m_Extent: {x: NaN, y: NaN, z: NaN}
