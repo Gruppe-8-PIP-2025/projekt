@@ -1,4 +1,19 @@
 # PIP 2025
+
+## Program Architecture Overview
+```mermaid
+classDiagram
+
+WorldManager ..> GridManager : requires
+WorldManager ..> MenuSystem : requires
+WorldManager ..> CameraController : requires
+
+MenuSystem ..> UserBuildInterface : requires
+
+GridManager ..> CursorUtility : requires
+```
+
+## Critical Path Gantt
 ```mermaid
 gantt
     title PIP2025
