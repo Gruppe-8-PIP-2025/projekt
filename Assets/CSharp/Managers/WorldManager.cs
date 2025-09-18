@@ -33,7 +33,7 @@ public partial class WorldManager : MonoBehaviour
   [SerializeField] private GameObject loadingScreen;
 
   /// <summary>Field containing the MenuSystem to handle, display and navigate between menu screens.</summary>
-  [SerializeField] private MenuSystem menuSystem;
+  [SerializeField] private MenuManager menuManager;
   #endregion
 
 
