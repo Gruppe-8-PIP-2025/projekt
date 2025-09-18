@@ -11,6 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SceneTransitionTestTarget.unity
     guid: 20944d7f5b6e077459d1a9b265d7afeb
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 45c631f414ec1b8449dd8fba3f5e5045
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: eb89f46605150894fa49ba5e500e76b8
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: ae4006f3c03786f42a7c00ac972fd61e, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

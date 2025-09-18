@@ -10,6 +10,10 @@ using UnityEngine;
 /// </summary>
 public partial class WorldManager : MonoBehaviour
 {
+  #region Instance Control
+  public static WorldManager Instance { get; private set; }
+  #endregion
+
   #region Constants
   /// <summary>Minimum time the loading screen remains active.</summary>
   private const float TRANSITION_TIME_MINIMUM = 0.66f;
@@ -22,13 +26,14 @@ public partial class WorldManager : MonoBehaviour
   #endregion
 
 
+
   #region Component Configuration
   [Header("Menus and Screens")]
   /// <summary>Field containing the GameObject that represents the LoadingScreen.</summary>
   [SerializeField] private GameObject loadingScreen;
 
   /// <summary>Field containing the MenuSystem to handle, display and navigate between menu screens.</summary>
-  [SerializeField] private MonoBehaviour menuSystem;
+  [SerializeField] private MenuManager menuManager;
   #endregion
 
 
@@ -42,6 +47,15 @@ public partial class WorldManager : MonoBehaviour
 
 
   #region Scene Control
+  public void QuitGame()
+  {
+    #if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+    #else
+      Application.Quit();
+    #endif
+  }
+
   /// <summary>
   /// Initiates the process of moving the user to a different scene, utilizing a
   /// loading screen where applicable. This will disinherit the current
@@ -74,23 +88,10 @@ public partial class WorldManager : MonoBehaviour
   #endregion
 
 
-  #region MenuSystem
-  /// <summary>
-  /// Pauses the game by setting the tick-rate/rate of advancement within the
-  /// scene to zero.
-  /// </summary>
-  /// <remarks>
-  /// Not implemented.
-  /// This method will accept various parameters, such as the muffling of
-  /// ambient game audio or music. This method will purely pause the game in
-  /// this way and calling it will not itself open a pause menu.
-  /// </remarks>
-  public void PauseGame()
+  public void ResetControlVariables()
   {
-    Debug.LogException(new NotImplementedException("PauseGame is not yet implemented."));
+    Debug.LogException(new NotImplementedException("ResetControlVariables is not yet implemented."));
   }
-  #endregion
-
 
   #region MonoBehavior
   /// <summary>
@@ -100,6 +101,16 @@ public partial class WorldManager : MonoBehaviour
   /// </summary>
   void Awake()
   {
+    if (Instance is not null)
+    {
+      Debug.LogWarning("Duplicate WorldManager detected.");
+      Destroy(gameObject);
+    }
+    else
+    {
+      Instance = this;
+    }
+
     DontDestroyOnLoad(gameObject);
     sessionStatistics = new();
   }
