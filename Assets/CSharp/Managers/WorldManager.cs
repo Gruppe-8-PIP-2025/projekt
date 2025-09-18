@@ -17,34 +17,15 @@ public class WorldManager : MonoBehaviour
     private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
-  #region Control Variables
-  private bool _isPaused;
-  #endregion
 
   #region Component Configuration
   [Header("Scene Transitions")]
   [SerializeField] private GameObject LoadingScreen;
   #endregion
 
-  #region MenuSystem Link
-  [Header("Menu System")]
-  [SerializeField] private MenuSystem menusystem;
-  #endregion
-
-
   private SessionStatistics sessionStatistics;
   private GameFlagManager gameFlagManager;
   private SceneManager sceneManager;
-
-    public void QuitGame()
-    {
-    #if  UNITY_EDITOR
-         UnityEditor.EditorApplication.isPlaying = false;
-    #else
-         Application.Quit();
-    #endif
-    }
-
 
     /// <summary>
     /// Initiates the process of moving the user to a different scene, utilizing a
@@ -76,23 +57,6 @@ public class WorldManager : MonoBehaviour
   /// ambient game audio or music. This method will purely pause the game in
   /// this way and calling it will not itself open a pause menu.
   /// </remarks>
-  public void PauseGame()
-  {
-    Time.timeScale = 0.0f;
-    _isPaused = true;
-  }
-
-  public void UnPauseGame()
-  {
-    Time.timeScale = 1.0f;
-    _isPaused = false;
-  }
-
-  public void ResetControlVariables()
-  {
-    UnPauseGame();
-    Debug.LogException(new NotImplementedException("ResetControlVariables is not yet implemented."));
-  }
 
   #region Coroutines
   private IEnumerator LoadScene(string value)
@@ -141,13 +105,13 @@ public class WorldManager : MonoBehaviour
     DontDestroyOnLoad(gameObject);
     sessionStatistics = new();
 
-    //SceneTransitonTest();
   }
-  #endregion
+    #endregion
 
+ 
 
-  #region Test/Debug
-  private void SceneTransitonTest()
+    #region Test/Debug
+    private void SceneTransitonTest()
   {
     SceneTransition(SCENETRANSTIONTESTTARGET);
   }
