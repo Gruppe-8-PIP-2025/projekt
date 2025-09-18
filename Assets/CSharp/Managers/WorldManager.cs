@@ -10,6 +10,10 @@ using UnityEngine;
 /// </summary>
 public partial class WorldManager : MonoBehaviour
 {
+  #region Instance Control
+  public static WorldManager Instance { get; private set; }
+  #endregion
+
   #region Constants
   /// <summary>Minimum time the loading screen remains active.</summary>
   private const float TRANSITION_TIME_MINIMUM = 0.66f;
@@ -21,6 +25,10 @@ public partial class WorldManager : MonoBehaviour
   private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
+  #region Control Variables
+  private bool _isPaused;
+  #endregion
+
 
   #region Component Configuration
   [Header("Menus and Screens")]
@@ -28,7 +36,7 @@ public partial class WorldManager : MonoBehaviour
   [SerializeField] private GameObject loadingScreen;
 
   /// <summary>Field containing the MenuSystem to handle, display and navigate between menu screens.</summary>
-  [SerializeField] private MonoBehaviour menuSystem;
+  [SerializeField] private MenuSystem menuSystem;
   #endregion
 
 
@@ -42,6 +50,15 @@ public partial class WorldManager : MonoBehaviour
 
 
   #region Scene Control
+  public void QuitGame()
+  {
+    #if  UNITY_EDITOR
+      UnityEditor.EditorApplication.isPlaying = false;
+    #else
+      Application.Quit();
+    #endif
+  }
+
   /// <summary>
   /// Initiates the process of moving the user to a different scene, utilizing a
   /// loading screen where applicable. This will disinherit the current
@@ -87,7 +104,20 @@ public partial class WorldManager : MonoBehaviour
   /// </remarks>
   public void PauseGame()
   {
-    Debug.LogException(new NotImplementedException("PauseGame is not yet implemented."));
+    Time.timeScale = 0.0f;
+    _isPaused = true;
+  }
+
+  public void UnPauseGame()
+  {
+    Time.timeScale = 1.0f;
+    _isPaused = false;
+  }
+
+  public void ResetControlVariables()
+  {
+    UnPauseGame();
+    Debug.LogException(new NotImplementedException("ResetControlVariables is not yet implemented."));
   }
   #endregion
 
@@ -100,6 +130,16 @@ public partial class WorldManager : MonoBehaviour
   /// </summary>
   void Awake()
   {
+    if (Instance is not null)
+    {
+      Debug.LogWarning("Duplicate WorldManager detected.");
+      Destroy(gameObject);
+    }
+    else
+    {
+      Instance = this;
+    }
+    
     DontDestroyOnLoad(gameObject);
     sessionStatistics = new();
   }
