@@ -7,6 +7,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
+/// <author>
+/// Maria Wickes (maria.lindling@protonmail.com)
+/// </author>
+/// <summary>
+/// Object providing control and configuration of the user interface used for
+/// gameplay aspects such as building.
+/// </summary>
 public class UserBuildInterface : MonoBehaviour
 {
   #region Unity Editor Fields
@@ -66,7 +73,6 @@ public class UserBuildInterface : MonoBehaviour
 
 
   #region ScriptableObject Handling
-  // TODO: attach the method that initializes the build process to the button
   /// <summary>
   /// Creates a button with values derived from the BuildableScriptableObject's
   /// properties and attaches a function that initiates the build process to the
@@ -75,37 +81,67 @@ public class UserBuildInterface : MonoBehaviour
   /// <param name="value">the scriptable object being used as a base</param>
   private void CreateBuildableButton(BuildableEntry value)
   {
-    GameObject buildableButton = Instantiate(builtableButtonPrefab);
-    TMP_Text buildableButtonLabel = buildableButton
+    value.Button = Instantiate(builtableButtonPrefab);
+    value.Label = value.Button
       .GetComponentsInChildren<TMP_Text>()
         .FirstOrDefault();
 
-    buildableButton.GetComponent<Button>().onClick.AddListener(delegate
-    {
-      Debug.Log($"Attempt to build {buildableButtonLabel.text}."); // TODO
-    });
-    buildableButton.GetComponent<RawImage>().texture = value.Buildable.MenuIcon;
-    buildableButtonLabel.text = value.Buildable.LocalizedName;
+    value.Button.GetComponent<RawImage>().texture = value.Buildable.MenuIcon;
+    value.Label.text = value.Buildable.LocalizedName;
 
-    buildableButton.transform.SetParent(buildablesPanel.transform);
-    _buildableButtons.Add(buildableButton);
+    if (value.Enabled)
+    {
+      SetBuildableButtonEnabled(value);
+    }
+    else
+    {
+      SetBuildableButtonDisabled(value);
+    }
+
+    value.Button.transform.SetParent(buildablesPanel.transform);
+    _buildableButtons.Add(value.Button);
   }
 
   /// <summary>Destroys the given object.</summary>
+  /// <param name="value">The GameObject to be destroyed.</param>
   private void DestroyBuildableButton(GameObject value)
   {
     _buildableButtons.Remove(value);
     Destroy(value);
   }
 
-  private void SetBuildableButtonEnabled(GameObject value)
+  /// <summary>
+  /// Destroys the button component of the BuildableEntry and clears the
+  /// affected properties.
+  /// </summary>
+  /// <param name="value">
+  /// The BuildableEntry hosting the button to be destroyed.
+  /// </param>
+  private void DestroyBuildableButton(BuildableEntry value)
   {
-
+    DestroyBuildableButton(value.Button);
+    value.Button = null;
+    value.Label = null;
   }
 
-  private void SetBuildableButtonDisabled(GameObject value)
+  // TODO: attach the method that initializes the build process to the button
+  /// <summary>Switches the BuildableButton to the Enabled configuration.</summary>
+  private void SetBuildableButtonEnabled(BuildableEntry value)
   {
+    value.Button.GetComponent<Button>().onClick.AddListener(delegate
+    {
+      Debug.Log($"Attempt to build {value.Label.text}."); // TODO
+    });
+    // TODO: visual formatting of "enabled" state
+    value.Label.color = Color.green;
+  }
 
+  /// <summary>Switches the BuildableButton to the Disabled configuration.</summary>
+  private void SetBuildableButtonDisabled(BuildableEntry value)
+  {
+    value.Button.GetComponent<Button>().onClick.RemoveAllListeners();
+    // TODO: visual formatting of "disabled" state
+    value.Label.color = Color.red;
   }
 
   /// <summary>

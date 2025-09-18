@@ -1,4 +1,5 @@
 
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,4 +10,7 @@ class BuildableEntry
 
   public BuildableScriptableObject Buildable => buildable;
   public bool Enabled => enabled;
+
+  public GameObject Button { get; set; }
+  public TMP_Text Label { get; set; }
 }
