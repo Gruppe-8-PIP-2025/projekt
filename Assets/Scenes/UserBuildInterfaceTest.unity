@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 398213437}
   - component: {fileID: 398213436}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TMP_Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,7 +362,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &669961342
 RectTransform:
   m_ObjectHideFlags: 0
@@ -957,12 +957,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542eea931f1058441b69f66b1b9d721b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  availableBuildables:
+  - buildable: {fileID: 11400000, guid: 3363da0105e914b4c9cfb00edacf7a0e, type: 2}
+    enabled: 1
+  - buildable: {fileID: 11400000, guid: 90ff5811a47306940be716aaf32fe0b2, type: 2}
+    enabled: 1
+  - buildable: {fileID: 11400000, guid: 8c24397790673f043990a802e3a5e394, type: 2}
+    enabled: 0
   builtableButtonPrefab: {fileID: 2496980998624589820, guid: aaef9301bd1e4d64cb8d12b568e299a2, type: 3}
   buildablesPanel: {fileID: 1573380659}
-  availableBuildables:
-  - {fileID: 11400000, guid: 3363da0105e914b4c9cfb00edacf7a0e, type: 2}
-  - {fileID: 11400000, guid: 90ff5811a47306940be716aaf32fe0b2, type: 2}
-  - {fileID: 11400000, guid: 8c24397790673f043990a802e3a5e394, type: 2}
+  buildInterfaceComponents:
+  - {fileID: 1095133874}
+  - {fileID: 1779874518}
+  - {fileID: 1573380659}
 --- !u!1 &1573380659
 GameObject:
   m_ObjectHideFlags: 0
