@@ -15,6 +15,7 @@ using static UnityEngine.InputSystem.InputAction;
 /// Attach this script to a GameObject in your Unity scene and assign
 /// a Camera reference in the Inspector. Useful for RTS-style controls
 /// or any system where the cursor position in world space is needed.
+/// <br/><br/>!NOTE Removed static modifier from fields and methods.<br/>-Maria
 /// </remarks>
 public class CursorUtility : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class CursorUtility : MonoBehaviour
     /// <summary>
     /// Stores the default cursor texture, if one is set.
     /// </summary>
-    private static Texture defaultCursorTexture = null;
+    private Texture defaultCursorTexture = null;
 
     /// <author>
     /// Can Özbal (canoezbal@gmail.com)
@@ -75,7 +76,7 @@ public class CursorUtility : MonoBehaviour
     /// <remarks>
     /// If a <see cref="Sprite"/> is used, convert it to a <see cref="Texture2D"/> first.
     /// </remarks>
-    public static void SetCursorTexture(Texture texture)
+    public void SetCursorTexture(Texture texture)
     {
         if (texture is Texture2D tex2D)
         {
@@ -90,7 +91,7 @@ public class CursorUtility : MonoBehaviour
     /// <summary>
     /// Resets the cursor to the default texture if set, otherwise resets to system default.
     /// </summary>
-    public static void ResetCursorTexture()
+    public void ResetCursorTexture()
     {
         if (defaultCursorTexture != null && defaultCursorTexture is Texture2D tex2D)
         {
@@ -106,7 +107,7 @@ public class CursorUtility : MonoBehaviour
     /// Defines a default cursor texture to be used by <see cref="ResetCursorTexture"/>.
     /// </summary>
     /// <param name="texture">The texture to store as the default cursor.</param>
-    public static void SetDefaultCursor(Texture texture)
+    public void SetDefaultCursor(Texture texture)
     {
         defaultCursorTexture = texture;
     }
