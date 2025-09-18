@@ -2,19 +2,53 @@ using System;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
+/// <author>
+/// Can Özbal (canoezbal@gmail.com)
+/// </author>
+/// <summary>
+/// Provides utility methods for handling the cursor in Unity, such as:
+/// - Converting mouse position to world-space X/Z coordinates
+/// - Setting and resetting cursor textures
+/// - Storing a default cursor
+/// </summary>
+/// <remarks>
+/// Attach this script to a GameObject in your Unity scene and assign
+/// a Camera reference in the Inspector. Useful for RTS-style controls
+/// or any system where the cursor position in world space is needed.
+/// </remarks>
 public class CursorUtility : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Camera cam;   
+    /// <summary>
+    /// The camera used to convert screen-space mouse position into a world-space ray.
+    /// </summary>
+    [SerializeField] private Camera cam;
 
+    /// <summary>
+    /// Stores the default cursor texture, if one is set.
+    /// </summary>
     private static Texture defaultCursorTexture = null;
 
+    /// <author>
+    /// Can Özbal (canoezbal@gmail.com)
+    /// </author>
+    /// <summary>
+    /// Logs the current cursor world position (X and Z coordinates) to the Unity console.
+    /// </summary>
+    /// <param name="ctx">The input callback context, typically provided by Unity's Input System.</param>
     public void PrintPosition2D(CallbackContext ctx)
     {
         Debug.Log($"Cursor is located at X:{Position2D.x} Z:{Position2D.y}");
     }
 
-    public Vector2 Position2D   
+    /// <summary>
+    /// Gets the current cursor position projected onto the XZ plane (world space).
+    /// </summary>
+    /// <remarks>
+    /// Requires the <see cref="cam"/> field to be assigned. If no intersection
+    /// with the ground plane is found, returns <see cref="Vector2.zero"/>.
+    /// </remarks>
+    public Vector2 Position2D
     {
         get
         {
@@ -34,6 +68,13 @@ public class CursorUtility : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the cursor texture to the specified <see cref="Texture2D"/>.
+    /// </summary>
+    /// <param name="texture">The texture to use for the cursor. Must be a <see cref="Texture2D"/>.</param>
+    /// <remarks>
+    /// If a <see cref="Sprite"/> is used, convert it to a <see cref="Texture2D"/> first.
+    /// </remarks>
     public static void SetCursorTexture(Texture texture)
     {
         if (texture is Texture2D tex2D)
@@ -42,10 +83,13 @@ public class CursorUtility : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CursorUtility: Unity unterstützt nur Texture2D für Cursor.SetCursor(). Falls du ein Sprite hast, musst du dessen Texture2D verwenden.");
+            Debug.LogWarning("CursorUtility: Unity only supports Texture2D for Cursor.SetCursor(). If you have a Sprite, use its Texture2D.");
         }
     }
 
+    /// <summary>
+    /// Resets the cursor to the default texture if set, otherwise resets to system default.
+    /// </summary>
     public static void ResetCursorTexture()
     {
         if (defaultCursorTexture != null && defaultCursorTexture is Texture2D tex2D)
@@ -58,27 +102,14 @@ public class CursorUtility : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Defines a default cursor texture to be used by <see cref="ResetCursorTexture"/>.
+    /// </summary>
+    /// <param name="texture">The texture to store as the default cursor.</param>
     public static void SetDefaultCursor(Texture texture)
     {
         defaultCursorTexture = texture;
     }
-
-    //private void Update()
-    //{
-    //    // Wenn linke Maustaste gedrückt wird
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        RaycastHit raycastHit;
-
-    //        // Ray von diesem Objekt nach vorne
-    //        if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
-    //        {
-    //            if (raycastHit.collider.CompareTag("Respawn"))
-    //            {
-    //                Debug.DrawRay(transform.position, transform.forward * raycastHit.distance, Color.green, 10f);
-    //                Debug.Log("raycastHit: " + raycastHit.collider.name);
-    //            }
-    //        }
-    //    }
-    //}
 }
+
+
