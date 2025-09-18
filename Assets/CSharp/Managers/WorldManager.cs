@@ -17,6 +17,10 @@ public class WorldManager : MonoBehaviour
     private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
+  #region Control Variables
+  private bool _isPaused;
+  #endregion
+
   #region Component Configuration
   [Header("Scene Transitions")]
   [SerializeField] private GameObject LoadingScreen;
@@ -74,15 +78,20 @@ public class WorldManager : MonoBehaviour
   /// </remarks>
   public void PauseGame()
   {
-    Debug.LogException(new NotImplementedException("PauseGame is not yet implemented."));
+    Time.timeScale = 0.0f;
+    _isPaused = true;
   }
 
-  /// <summary>
-  /// Attempts to find and adopt the current SceneManager.
-  /// </summary>
-  public void AdoptSceneManager()
+  public void UnPauseGame()
   {
-    Debug.LogException(new NotImplementedException("AdoptSceneManager is not yet implemented."));
+    Time.timeScale = 1.0f;
+    _isPaused = false;
+  }
+
+  public void ResetControlVariables()
+  {
+    UnPauseGame();
+    Debug.LogException(new NotImplementedException("ResetControlVariables is not yet implemented."));
   }
 
   #region Coroutines
