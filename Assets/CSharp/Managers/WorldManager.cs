@@ -25,9 +25,6 @@ public partial class WorldManager : MonoBehaviour
   private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
-  #region Control Variables
-  private bool _isPaused;
-  #endregion
 
 
   #region Component Configuration
@@ -52,8 +49,8 @@ public partial class WorldManager : MonoBehaviour
   #region Scene Control
   public void QuitGame()
   {
-    #if  UNITY_EDITOR
-      UnityEditor.EditorApplication.isPlaying = false;
+    #if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
     #else
       Application.Quit();
     #endif
@@ -91,36 +88,10 @@ public partial class WorldManager : MonoBehaviour
   #endregion
 
 
-  #region MenuSystem
-  /// <summary>
-  /// Pauses the game by setting the tick-rate/rate of advancement within the
-  /// scene to zero.
-  /// </summary>
-  /// <remarks>
-  /// Not implemented.
-  /// This method will accept various parameters, such as the muffling of
-  /// ambient game audio or music. This method will purely pause the game in
-  /// this way and calling it will not itself open a pause menu.
-  /// </remarks>
-  public void PauseGame()
-  {
-    Time.timeScale = 0.0f;
-    _isPaused = true;
-  }
-
-  public void UnPauseGame()
-  {
-    Time.timeScale = 1.0f;
-    _isPaused = false;
-  }
-
   public void ResetControlVariables()
   {
-    UnPauseGame();
     Debug.LogException(new NotImplementedException("ResetControlVariables is not yet implemented."));
   }
-  #endregion
-
 
   #region MonoBehavior
   /// <summary>
@@ -139,7 +110,7 @@ public partial class WorldManager : MonoBehaviour
     {
       Instance = this;
     }
-    
+
     DontDestroyOnLoad(gameObject);
     sessionStatistics = new();
   }
