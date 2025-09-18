@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <author>
 /// Maria Wickes (maria.lindling@protonmail.com)
@@ -10,7 +8,7 @@ using UnityEngine.SceneManagement;
 /// WorldManager is the main persistent object that follows the player between
 /// scenes and contains and distributes data required to run the game.
 /// </summary>
-public class WorldManager : MonoBehaviour
+public partial class WorldManager : MonoBehaviour
 {
   #region Constants
   /// <summary>Minimum time the loading screen remains active.</summary>
@@ -23,21 +21,27 @@ public class WorldManager : MonoBehaviour
   private const string SCENETRANSTIONTESTTARGET = "SceneTransitionTestTarget";
   #endregion
 
+
   #region Component Configuration
-  [Header("Scene Transitions")]
+  [Header("Menus and Screens")]
   /// <summary>Field containing the GameObject that represents the LoadingScreen.</summary>
   [SerializeField] private GameObject loadingScreen;
+
+  /// <summary>Field containing the MenuSystem to handle, display and navigate between menu screens.</summary>
+  [SerializeField] private MonoBehaviour menuSystem;
   #endregion
 
 
-  /// <summary>Object that handles statistics tracking for the current play-session.</summary>
-  /// <remarks>Not implemented.</remarks>
-  private SessionStatistics sessionStatistics;
-  
-  /// <summary>Object for tracking, setting and managing GameFlags.</summary>
-  /// <remarks>Not implemented.</remarks>
-  private GameFlagManager gameFlagManager;
+  #region Properties
+  /// <summary>Field containing the GridManager meant to control and interpret the play area.</summary>
+  public MonoBehaviour GridManager { get; private set; }
 
+  /// <summary>Field containing the CameraController to control and limit player camera movement.</summary>
+  public MonoBehaviour CameraController { get; private set; }
+  #endregion
+
+
+  #region Scene Control
   /// <summary>
   /// Initiates the process of moving the user to a different scene, utilizing a
   /// loading screen where applicable. This will disinherit the current
@@ -53,7 +57,10 @@ public class WorldManager : MonoBehaviour
   {
     StartCoroutine(nameof(LoadScene), sceneName);
   }
+  #endregion
 
+
+  #region Settings
   /// <summary>
   /// Loads the current user's settings if they can be found. Otherwise this
   /// method will load the default settings and save them as the settings for
@@ -64,7 +71,10 @@ public class WorldManager : MonoBehaviour
   {
     Debug.LogException(new NotImplementedException("LoadUserSettings is not yet implemented."));
   }
+  #endregion
 
+
+  #region MenuSystem
   /// <summary>
   /// Pauses the game by setting the tick-rate/rate of advancement within the
   /// scene to zero.
@@ -79,71 +89,47 @@ public class WorldManager : MonoBehaviour
   {
     Debug.LogException(new NotImplementedException("PauseGame is not yet implemented."));
   }
-
-  #region Coroutines
-  /// <summary>
-  /// Activates the loading screen and updates its state based on the progress of
-  /// the load scene process, before de-activating the load screen when both
-  /// minimum time has elapsed and the progress has reached completion.
-  /// </summary>
-  /// <param name="value">file(?)name of the destination scene</param>
-  /// <returns>yields null on each iteration</returns>
-  private IEnumerator LoadScene(string value)
-  {
-    float timer = 0.0f;
-
-    // Delay to avoid timing conflicts when testing scene-change on startup.
-    if (value == SCENETRANSTIONTESTTARGET)
-    {
-      while (timer < 1.0f)
-      {
-        timer += Time.deltaTime;
-        yield return null;
-      }
-    }
-
-    loadingScreen.SetActive(true);
-    LoadingScreenWidget loadingScreenWidget = loadingScreen.GetComponent<LoadingScreenWidget>();
-
-    AsyncOperation asyncLoadScene = SceneManager.LoadSceneAsync(value);
-    asyncLoadScene.allowSceneActivation = false;
-    timer = 0.0f;
-
-    while (asyncLoadScene.progress < 0.9f || timer < TRANSITION_TIME_MINIMUM)
-    {
-      loadingScreenWidget.UpdateProgress(asyncLoadScene.progress);
-      timer += Time.deltaTime;
-      yield return null;
-    }
-
-    asyncLoadScene.allowSceneActivation = true;
-    loadingScreen.SetActive(false);
-  }
   #endregion
 
 
   #region MonoBehavior
+  /// <summary>
+  /// Awake is called once before the first execution of Update and Start after
+  /// the MonoBehaviour is created. It will be called even if this GameObject is
+  /// not active. 
+  /// </summary>
+  void Awake()
+  {
+    DontDestroyOnLoad(gameObject);
+    sessionStatistics = new();
+  }
+
   /// <summary>
   /// Start is called once before the first execution of Update after the
   /// MonoBehaviour is created.
   /// </summary>
   void Start()
   {
-    DontDestroyOnLoad(gameObject);
-    sessionStatistics = new();
+  }
 
-    // SceneTransitonTest();
+  /// <summary>
+  /// Update is called once every frame.
+  /// </summary>
+  void Update()
+  {
   }
   #endregion
 
 
-  #region Test/Debug
-  /// <summary>
-  /// Attempts to invoke SceneTransition to load the designated test scene.
-  /// </summary>
-  private void SceneTransitonTest()
-  {
-    SceneTransition(SCENETRANSTIONTESTTARGET);
-  }
+  #region X
+  // Implementation Suspended until Critical Issues are resolved.
+
+  /// <summary>Object that handles statistics tracking for the current play-session.</summary>
+  /// <remarks>Not implemented.</remarks>
+  private SessionStatistics sessionStatistics;
+
+  /// <summary>Object for tracking, setting and managing GameFlags.</summary>
+  /// <remarks>Not implemented.</remarks>
+  private GameFlagManager gameFlagManager;
   #endregion
 }

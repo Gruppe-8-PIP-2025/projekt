@@ -120,10 +120,11 @@ public class LoadingScreenWidget : MonoBehaviour
 
   #region MonoBehavior
   /// <summary>
-  /// Start is called once before the first execution of Update after the
-  /// MonoBehaviour is created.
+  /// Awake is called once before the first execution of Update and Start after
+  /// the MonoBehaviour is created. It will be called even if this GameObject is
+  /// not active. 
   /// </summary>
-  public void Start()
+  void Awake()
   {
     DontDestroyOnLoad(gameObject);
 
@@ -131,9 +132,15 @@ public class LoadingScreenWidget : MonoBehaviour
     SetLoadingInfoText(DEFAULT_LOADINGINFO);
     SetTipsAndTricksText(DEFAULT_TIPSANDTRICKS);
 
-    //TestBattery1();
-
     gameObject.SetActive(false);
+  }
+
+  /// <summary>
+  /// Start is called once before the first execution of Update after the
+  /// MonoBehaviour is created.
+  /// </summary>
+  public void Start()
+  {
   }
   #endregion
 
