@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1e28b8944eaeb48b4843ff0995d1f3, type: 3}
+  m_Name: BubbleExtractorTest 2
+  m_EditorClassIdentifier: 
+  localizedName: Bubble Extractor II
+  menuIcon: {fileID: 2800000, guid: 175b694565ca98149b1ef2fe648d4153, type: 3}
