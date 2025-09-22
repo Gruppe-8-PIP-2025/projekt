@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 
-public class GridTile
+public class GridTile : MonoBehaviour
 {
+  [SerializeField] private GameObject plane;
+
   /// <summary>
   /// Describes the tile's position in the grid.
   /// </summary>
@@ -15,14 +17,14 @@ public class GridTile
     Vector2 BottomLeft, Vector2 Bottom, Vector2 BottomRight
     ) Adjacencies =>
     (
-      Position + new Vector2( 1,  1),
-      Position + new Vector2( 1,  0),
-      Position + new Vector2( 1, -1),
-      Position + new Vector2( 0,  1),
-      Position + new Vector2( 0, -1),
       Position + new Vector2(-1,  1),
+      Position + new Vector2( 0,  1),
+      Position + new Vector2( 1,  1),
       Position + new Vector2(-1,  0),
-      Position + new Vector2(-1, -1)
+      Position + new Vector2( 1,  0),
+      Position + new Vector2(-1, -1),
+      Position + new Vector2( 0, -1),
+      Position + new Vector2( 1, -1)
     );
 
   public List<Vector2> Neighbours => new()
@@ -66,12 +68,31 @@ public class GridTile
     Intersects.Remove(placeable);
   }
 
-  #region Constructor
-  public GridTile(Vector2 position)
+  public void SetScale(Vector2 value)
+  {
+    transform.localScale = new Vector3(value.x, 1, value.y);
+  }
+  
+  public void SetScenePosition(Vector2 value)
+  {
+    transform.position = new Vector3(value.x, 0, value.y);
+
+    Boundary = new Rectangle(
+      (int)transform.position.x,
+      (int)transform.position.y,
+      (int)transform.localScale.x,
+      (int)transform.localScale.y
+    );
+  }
+
+  public void SetPosition(Vector2 value)
+  {
+    Position = value;
+  }
+
+  private void Awake()
   {
     Contains = new();
     Intersects = new();
-    Position = position;
   }
-  #endregion
 }

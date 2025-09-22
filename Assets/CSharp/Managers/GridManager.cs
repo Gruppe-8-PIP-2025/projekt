@@ -2,12 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using NUnit.Framework.Internal;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 public class GridManager : MonoBehaviour
 {
   [SerializeField] private GridDimensions gridDimensions;
+  [SerializeField] private CursorUtility cursorUtility;
+  [SerializeField] private GameObject gridTilePrefab;
+
+  #region Test/Debug
   [SerializeField] private GameObject testCube;
+  public void OnClickPlaceTestCube(CallbackContext ctx)
+  {
+    GridTile position = GetTileAtCursor();
+
+    if (position == null)
+      return;
+
+    IPlaceable placeable = testCube.GetComponent<TestPlaceable>();
+    RemovePlaceable(placeable);
+    AddPlaceable(placeable,position);
+  }
+  private void TestAwake()
+  {
+    AddPlaceable(testCube.GetComponent<TestPlaceable>(), GetTileByGridCoordinates(new Vector2(4,10)));
+  }
+  #endregion
 
   // describes the size and position of the grid in unity's scene coordinates 
   public Rectangle Boundary { get; private set; }
@@ -18,58 +40,86 @@ public class GridManager : MonoBehaviour
   // a list of all tiles within the grid
   public List<GridTile> GridTiles { get; private set; }
 
+  public GridTile GetTileAtCursor()
+  {
+    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    // Casts the ray and get the first game object hit 
+    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("GridTile")))
+    {
+      return hit.transform.gameObject.GetComponentInParent<GridTile>();
+    }
+    else
+    {
+      return null;
+    }
+  }
+
   // returns false if the IPlaceable overlaps with any conflicting IPlaceables already in the grid
   // returns true in all other cases
   public bool ValidatePlacement(IPlaceable placeable, Vector2 position) =>
-    ValidatePlacement(placeable,GetTileByGridCoordinates(position));
+    ValidatePlacement(placeable, GetTileByGridCoordinates(position));
 
-  public bool ValidatePlacement(IPlaceable placeable, GridTile position) =>
-    !(position.Contains.Any(p => p.Category == placeable.Category) ||
-      position.Intersects.Any(p => p.Category == placeable.Category));
-
-  // returns which tile corresponds with the given scene coordinates
-  // returns null if the coordinates are not within the grid
-  public GridTile GetTileBySceneCoordinates(Vector2 value)
+  public bool ValidatePlacement(IPlaceable placeable, GridTile position)
   {
-    return GetTileByGridCoordinates(new Vector2(
-      (value.x - Boundary.Left) / gridDimensions.TileDimensions.x,
-      (value.y - Boundary.Top) / gridDimensions.TileDimensions.y 
-    ));
+    if (placeable == null)
+      throw new NullReferenceException("IPlaceable is null.");
+    if (position == null)
+      throw new NullReferenceException($"GridTile is null. Total GridTiles: {GridTiles.Count}");
+
+    return !(position.Contains.Any(p => p.Category == placeable.Category)
+       || position.Intersects.Any(p => p.Category == placeable.Category));
   }
-  
+
   // returns which tile has the given position in the grid
   // returns null if the position doesn't exist
-  public GridTile GetTileByGridCoordinates(Vector2 value) =>
-    GridTiles.Find(tile=>tile.Position.Equals(value));
-
+  public GridTile GetTileByGridCoordinates(Vector2 value)
+  {
+    return GridTiles.Find(tile => tile.Position.Equals(value));
+  }
+  
   // puts the IPlaceable into the GridTile at the given grid coordinates/tile
   // This method should *not* implement ValidatePlacement and *can* place IPlaceables in invalid positions
   // returns void
   public void AddPlaceable(IPlaceable placeable, Vector2 position) =>
-    AddPlaceable(placeable,GetTileByGridCoordinates(position));
+    AddPlaceable(placeable, GetTileByGridCoordinates(position));
 
   public void AddPlaceable(IPlaceable placeable, GridTile position)
   {
-    position.AddPlaceable(placeable);
+    if (placeable == null)
+      throw new NullReferenceException("IPlaceable is null.");
+    if (position == null)
+      throw new NullReferenceException($"GridTile is null. Total GridTiles: {GridTiles.Count}");
 
     for (
       int x = (int)position.Position.x;
-      x <= position.Position.x - placeable.Dimensions.x;
-      x--)
+      x <= position.Position.x + placeable.Dimensions.x;
+      x++)
     {
       for (
         int y = (int)position.Position.y;
-        y <= position.Position.y - placeable.Dimensions.y;
-        y--)
+        y <= position.Position.y + placeable.Dimensions.y;
+        y++)
       {
-        GetTileByGridCoordinates(new Vector2(x, y)).AddIntersect(placeable);
+        GridTile gridTile = GetTileByGridCoordinates(new Vector2(x, y));
+
+        if (gridTile == null)
+          return;
+
+        gridTile.AddIntersect(placeable);
       }
     }
+
+    position.AddPlaceable(placeable);
+
+    placeable.Transform.position = position.transform.position;
   }
 
   // removes the given IPlaceable from the GridTile that contains it
   public void RemovePlaceable(IPlaceable placeable)
   {
+    if (placeable == null)
+      throw new NullReferenceException("IPlaceable is null.");
+
     foreach (GridTile gridTile in GridTiles)
     {
       gridTile.RemovePlaceable(placeable);
@@ -110,11 +160,36 @@ public class GridManager : MonoBehaviour
   /// </summary>
   void Awake()
   {
-    GridTiles = new();
     Boundary = gridDimensions.Value;
     Dimensions = gridDimensions.GridSize;
 
-    testCube.transform.position = new Vector3(Boundary.Top,0,Boundary.Left);
+    GridTiles = new();
+    for (int x = 1; x <= Dimensions.x; x++)
+    {
+      for (int y = 1; y <= Dimensions.y; y++)
+      {
+        GameObject gridTile = Instantiate(gridTilePrefab);
+
+        gridTile.name = $"GridTile ({x},{y})";
+
+        gridTile.transform.SetParent(gameObject.transform);
+
+        GridTile gridTileComponent = gridTile.GetComponent<GridTile>();
+
+        gridTileComponent.SetScale(gridDimensions.TileDimensions);
+
+        gridTileComponent.SetScenePosition(new Vector2(
+          10 * (Boundary.Left + (x-1) * gridDimensions.TileDimensions.x),
+          10 * (Boundary.Top - (y-1) * gridDimensions.TileDimensions.y)
+        ));
+
+        gridTileComponent.SetPosition(new Vector2(x, y));
+
+        GridTiles.Add(gridTileComponent);
+      }
+    }
+
+    TestAwake();
   }
 
   /// <summary>
