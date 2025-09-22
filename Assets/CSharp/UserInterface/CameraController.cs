@@ -50,6 +50,9 @@ public class CameraController : MonoBehaviour
     private float CurrentZoomSpeed = 0f;
     private Vector3 Velocity = Vector3.zero;
     private Bounds mapBounds;
+
+    private bool isDragging = false;
+    private Vector2 lastMousePosition;
     #endregion
 
     #region Properties
@@ -83,7 +86,7 @@ public class CameraController : MonoBehaviour
     public void OnScroll(CallbackContext ctx) => scrollInput = ctx.ReadValue<Vector2>();
 
     /// <summary>
-    /// Handles middle mouse button input.
+    /// /// Handles middle mouse button input (not currently used for dragging, handled in LateUpdates
     /// </summary>
     public void OnMiddleClick(CallbackContext ctx) => middleClickInput = ctx.ReadValueAsButton();
     #endregion
@@ -163,23 +166,75 @@ public class CameraController : MonoBehaviour
     }
 
     /// <summary>
+    /// Moves the camera target based on mouse drag delta.
+    /// </summary>
+    private void DragCamera(Vector2 delta)
+    {
+        // Scale drag speed based on zoom level so movement feels natural
+        float zoomMultiplier = MoveSpeedZoomCurve.Evaluate(ZoomLevel);
+
+        // Convert screen-space delta into world-space motion
+        Vector3 right = Camera.main.transform.right;
+        right.y = 0f;
+        right.Normalize();
+
+        Vector3 forward = Camera.main.transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+
+        // Apply delta (tweak multiplier for desired feel)
+        float dragSpeed = 0.01f * MoveSpeed * zoomMultiplier;
+        Vector3 motion = (-right * delta.x + -forward * delta.y) * dragSpeed;
+
+        CameraTarget.position += motion;
+
+        // Clamp to map bounds if needed
+        if (Map != null)
+        {
+            Vector3 pos = CameraTarget.position;
+            pos.x = Mathf.Clamp(pos.x, mapBounds.min.x, mapBounds.max.x);
+            pos.z = Mathf.Clamp(pos.z, mapBounds.min.z, mapBounds.max.z);
+            CameraTarget.position = pos;
+        }
+    }
+
+    /// <summary>
     /// Handles input and updates movement/zoom each frame.
     /// </summary>
+
     private void LateUpdate()
     {
         float deltaTime = Time.unscaledDeltaTime;
 
         if (Mouse.current != null)
         {
-            if (Mouse.current.middleButton.wasPressedThisFrame)
-                middleClickInput = true;
+            // Start drag (LMB or MMB)
+            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame)
+            {
+                isDragging = true;
+                lastMousePosition = Mouse.current.position.ReadValue();
+            }
 
-            if (Mouse.current.middleButton.wasReleasedThisFrame)
-                middleClickInput = false;
+            // End drag
+            if (Mouse.current.leftButton.wasReleasedThisFrame || Mouse.current.middleButton.wasReleasedThisFrame)
+            {
+                isDragging = false;
+            }
+
+            // While dragging, move camera
+            if (isDragging)
+            {
+                Vector2 currentMousePosition = Mouse.current.position.ReadValue();
+                Vector2 delta = currentMousePosition - lastMousePosition;
+
+                DragCamera(delta);
+                lastMousePosition = currentMousePosition;
+            }
         }
 
         UpdateMovement(deltaTime);
         UpdateZoom(deltaTime);
     }
+
     #endregion
 }
