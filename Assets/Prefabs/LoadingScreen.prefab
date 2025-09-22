@@ -354,15 +354,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd2f17848b1a0134fb28ac51e57d8163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SplashGraphic: {fileID: 3552258011166378032}
-  LogoGraphic: {fileID: 2190213836446893623}
-  TipsAndTricks: {fileID: 6554862338383756161}
-  ProgresIndicators:
+  splashGraphic: {fileID: 3552258011166378032}
+  logoGraphic: {fileID: 2190213836446893623}
+  tipsAndTricks: {fileID: 6554862338383756161}
+  progresIndicators:
   - {fileID: 6480100937798846433}
   - {fileID: 2353001887871801716}
   - {fileID: 5265657590906945419}
   - {fileID: 3312635035337852368}
-  LoadingInfo: {fileID: 3913362544112411639}
+  loadingInfo: {fileID: 3913362544112411639}
 --- !u!1 &2727920785564415711
 GameObject:
   m_ObjectHideFlags: 0
