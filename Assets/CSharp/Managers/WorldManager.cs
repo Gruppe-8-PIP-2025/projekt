@@ -70,7 +70,15 @@ public partial class WorldManager : MonoBehaviour
   public void SceneTransition(string sceneName)
   {
     StartCoroutine(nameof(LoadScene), sceneName);
+    AdoptGridManager();
   }
+
+  /// <summary>
+  /// Attempts to find and adopt the local GridManager for the current scene. 
+  /// </summary>
+  /// <typeparam name="GridManager"></typeparam>
+  private void AdoptGridManager() =>
+    GridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
   #endregion
 
 
@@ -101,7 +109,7 @@ public partial class WorldManager : MonoBehaviour
   /// </summary>
   void Awake()
   {
-    if (Instance is not null)
+    if (Instance != null)
     {
       Debug.LogWarning("Duplicate WorldManager detected.");
       Destroy(gameObject);
@@ -121,6 +129,7 @@ public partial class WorldManager : MonoBehaviour
   /// </summary>
   void Start()
   {
+    AdoptGridManager();
   }
 
   /// <summary>
