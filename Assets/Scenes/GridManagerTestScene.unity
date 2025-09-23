@@ -268,15 +268,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2494408314037568222, guid: 4722c409fb1e1cb48b8fe31f6ab3b68b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2494408314037568222, guid: 4722c409fb1e1cb48b8fe31f6ab3b68b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 112.8
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 2494408314037568222, guid: 4722c409fb1e1cb48b8fe31f6ab3b68b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 54
+      value: -110
       objectReference: {fileID: 0}
     - target: {fileID: 2494408314037568222, guid: 4722c409fb1e1cb48b8fe31f6ab3b68b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -885,13 +885,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54f4b3ced297c0544ba8c56d84ae9b9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridDimensions:
-    tileSizeX: 1
-    tileSizeZ: 1
-    sizeX: 24
-    sizeZ: 16
-  cursorUtility: {fileID: 1858362710}
-  gridTilePrefab: {fileID: 3248536258952563606, guid: ab7da9654f55cf74386d769898bc5bfb, type: 3}
+  gridParams:
+    tileScale: {x: 1, y: 1}
+    gridTilePrefab: {fileID: 3248536258952563606, guid: ab7da9654f55cf74386d769898bc5bfb, type: 3}
+    gridDimensions: {x: 24, y: 16}
   testCube: {fileID: 511888413}
 --- !u!4 &1858362709
 Transform:
