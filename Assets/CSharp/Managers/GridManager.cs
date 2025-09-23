@@ -17,6 +17,16 @@ public class GridManager : MonoBehaviour
   /// of the grid itself.
   /// </summary>
   [SerializeField] private GridParameters gridParams;
+
+  /// <summary>Plane object used to preview the position and size of the generated grid</summary>
+  /// <remarks>
+  /// The transform.localScale of the Plane should match the grid dimensions (grid.Y = Z)
+  /// <br/>The transform.position of the Plane in the editor should X = -5, Y = 0 and
+  /// Z = (grid.Y * -10 + 5).
+  /// <br/><i>If I have time, I'll make an editor-script to format the previewPlane
+  /// automatically. -Maria</i>
+  /// </remarks>
+  [SerializeField] private GameObject previewPlane;
   #endregion
 
 
@@ -89,7 +99,7 @@ public class GridManager : MonoBehaviour
     if (placeable == null)
       throw new NullReferenceException("IPlaceable is null.");
     if (position == null)
-      throw new NullReferenceException($"GridTile is null. Total GridTiles: {GridTiles.Count}");
+      throw new NullReferenceException($"GridTile is null.");
 
     List<Placeables> categories = new() { placeable.Category };
 
@@ -152,7 +162,7 @@ public class GridManager : MonoBehaviour
     if (placeable == null)
       throw new NullReferenceException("IPlaceable is null.");
     if (position == null)
-      throw new NullReferenceException($"GridTile is null. Total GridTiles: {GridTiles.Count}");
+      throw new NullReferenceException($"GridTile is null.");
 
     for (int x = 0; x < placeable.Dimensions.x; x++)
     {
@@ -256,7 +266,7 @@ public class GridManager : MonoBehaviour
     if (placeable == null)
       throw new NullReferenceException("IPlaceable is null.");
     if (position == null)
-      throw new NullReferenceException($"GridTile is null. Total GridTiles: {GridTiles.Count}");
+      throw new NullReferenceException($"GridTile is null.");
 
     for (
       int x = (int)position.Position.x;
@@ -385,6 +395,7 @@ public class GridManager : MonoBehaviour
       }
     }
 
+    previewPlane.SetActive(false);
     TestAwake();
   }
 
@@ -406,21 +417,41 @@ public class GridManager : MonoBehaviour
 
 
   #region Test/Debug
-  [SerializeField] private GameObject testCube;
+  [SerializeField] private GameObject testCubePrefab;
+  [SerializeField] private GameObject assetPlacementBox;
+  private IPlaceable testCube;
+  private bool testCubeExists = false;
   public void OnClickPlaceTestCube(CallbackContext ctx)
   {
     GridTile position = GetTileAtCursor();
 
     if (position == null)
+    {
+      Debug.LogWarning($"OnClickPlaceTestCube: position should be a GridTile, but is null.");
       return;
+    }
 
-    IPlaceable placeable = testCube.GetComponent<TestPlaceable>();
-    RemovePlaceable(placeable);
-    AddPlaceable(placeable, position);
+    if (!testCubeExists)
+    {
+      testCube = Instantiate(testCubePrefab).GetComponent<TestPlaceable>();
+      testCubeExists = true;
+    }
+
+    RemovePlaceable(testCube);
+    AddPlaceable(testCube, position);
+
+    testCube.ComponentOf.transform.SetParent(position.gameObject.transform);
   }
   private void TestAwake()
   {
-    AddPlaceable(testCube.GetComponent<TestPlaceable>(), GetTileByGridCoordinates(new Vector2(4, 10)));
+    if (!testCubeExists)
+    {
+      testCube = Instantiate(testCubePrefab).GetComponent<TestPlaceable>();
+      testCube.ComponentOf.transform.SetParent(assetPlacementBox.transform);
+      testCubeExists = true;
+    }
+
+    AddPlaceable(testCube, GetTileByGridCoordinates(new Vector2(Dimensions.x/3, Dimensions.y/3)));
   }
   #endregion
 }

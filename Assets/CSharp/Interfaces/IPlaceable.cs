@@ -21,4 +21,9 @@ public interface IPlaceable
   /// Describes the size of the IPlaceable in grid spaces.
   /// </summary>
   public Vector2 Dimensions { get; }
+
+
+  #region Unity
+  public GameObject ComponentOf { get; }
+  #endregion
 }

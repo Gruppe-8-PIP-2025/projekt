@@ -16,7 +16,7 @@ public partial class WorldManager : MonoBehaviour
 
   #region Constants
   /// <summary>Minimum time the loading screen remains active.</summary>
-  private const float TRANSITION_TIME_MINIMUM = 0.66f;
+  private const float TRANSITION_TIME_MINIMUM = 1.6667f;
 
   /// <summary>Origin Scene for SceneTransitionTest.</summary>
   private const string SCENETRANSTIONTESTORIGIN = "SceneTransitionTestOrigin";
