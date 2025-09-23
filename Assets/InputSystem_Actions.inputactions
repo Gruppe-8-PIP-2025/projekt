@@ -625,6 +625,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "f093e365-3f32-45db-ae8f-96390f2b647b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "ClickM1",
                     "type": "PassThrough",
                     "id": "1f757bd2-47b8-4ff6-85af-caa2f568ac65",
@@ -749,6 +758,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ClickM3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce014942-be14-4005-b4e7-3ba8c6149069",
+                    "path": "*/{Cancel}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

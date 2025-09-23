@@ -22,25 +22,33 @@ public class MenuManager : MonoBehaviour
 
     #region Pause/Unpause Functions
 
-    public void TogglePauseMenu(CallbackContext ctx)
+    public void TogglePauseMenu()
     {
-        if (isPaused)
-        {
-            Unpause();
-        }
-        else
-        {
-            Pause();
-        }
+      if (isPaused)
+      {
+          Unpause();
+      }
+      else
+      {
+          Pause();
+      }
     }
 
-    public void Pause()
+  public void TogglePauseMenu(CallbackContext ctx)
+  {
+    if (ctx.performed)
     {
-        isPaused = true;
-        Time.timeScale = 0f;
+      TogglePauseMenu();
+    }
+  }
 
-        OpenPauseMenu();
-    }   
+    public void Pause()
+  {
+    isPaused = true;
+    Time.timeScale = 0f;
+
+    OpenPauseMenu();
+  }   
 
     public void Unpause()
     {
@@ -115,11 +123,11 @@ public class MenuManager : MonoBehaviour
         OpenSettingMenuHandle();
     }
 
-    public void OnTitleScreenPress()
-    {
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("TitleScreen");
-    }
+  public void OnTitleScreenPress()
+  {
+    Time.timeScale = 1.0f;
+    WorldManager.Instance.SceneTransition("TitleScreen");
+  }
 
     public void OnQuitPress()
     {

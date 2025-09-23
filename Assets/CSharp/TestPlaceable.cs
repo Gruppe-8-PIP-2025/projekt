@@ -9,6 +9,8 @@ public class TestPlaceable : MonoBehaviour, IPlaceable
   public Transform Transform => gameObject.transform;
   public Vector2 Dimensions => dimensions;
 
+  public GameObject ComponentOf => gameObject;
+
   // Start is called once before the first execution of Update after the MonoBehaviour is created
   void Start()
   {
