@@ -7,6 +7,7 @@ public class EntityManager : MonoBehaviour
 
     private Dictionary<string, GameEntityData> entities = new Dictionary<string, GameEntityData>();
 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -14,11 +15,11 @@ public class EntityManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Instance = this;
 
+        Instance = this;
+        DontDestroyOnLoad(gameObject); // optional
         LoadAllEntities();
     }
-
     private void LoadAllEntities()
     {
         GameEntityData[] loadedEntities = Resources.LoadAll<GameEntityData>("Entities");
