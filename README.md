@@ -4,13 +4,24 @@
 ```mermaid
 classDiagram
 
-WorldManager ..> GridManager : requires
-WorldManager ..> MenuSystem : requires
-WorldManager ..> CameraController : requires
+class GameScene["GameScene<br/>(UnityScene)"]
 
-MenuSystem ..> UserBuildInterface : requires
+class WorldManager["WorldManager<br/>(Central Control Node)"] {
+ + WorldManager Instance$
+}
 
-GridManager ..> CursorUtility : requires
+%%%GameScene ..> WorldManager : requires
+GameScene ..> UserBuildInterface : requires
+GameScene ..> CameraController : requires
+
+WorldManager ..> GridManager : requires/adopts
+WorldManager ..> LoadingScreenWidget : requires/contains
+
+UserBuildInterface ..> BuildingManager : requires
+
+BuildingManager ..> GridManager : requires
+
+GridManager ..> EntityManager : requires
 ```
 
 ## Critical Path Gantt
