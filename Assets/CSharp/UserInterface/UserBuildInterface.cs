@@ -62,6 +62,7 @@ public class UserBuildInterface : MonoBehaviour
   /// <summary>Toggles the active state of the Buildables Panel.</summary>
   public void ToggleBuildablesPanel()
   {
+    Debug.Log("Ping");
     buildablesPanel.SetActive(!buildablesPanel.activeSelf);
   }
 
