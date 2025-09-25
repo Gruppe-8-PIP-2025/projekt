@@ -4,22 +4,14 @@
 ```mermaid
 classDiagram
 
-class GameScene["GameScene<br/>(UnityScene)"]
-
 class WorldManager["WorldManager<br/>(Central Control Node)"] {
  + WorldManager Instance$
 }
 
-%%%GameScene ..> WorldManager : requires
-GameScene ..> UserBuildInterface : requires
-GameScene ..> CameraController : requires
-
-WorldManager ..> GridManager : requires/adopts
 WorldManager ..> LoadingScreenWidget : requires/contains
-
-UserBuildInterface ..> BuildingManager : requires
-
-BuildingManager ..> GridManager : requires
+WorldManager ..> MenuManager : requires/adopts
+WorldManager ..> UserBuildInterface : requires/adopts
+WorldManager ..> GridManager : requires/adopts
 
 GridManager ..> EntityManager : requires
 ```
