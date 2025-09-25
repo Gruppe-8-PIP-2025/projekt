@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class TestSpawner : MonoBehaviour
 {
-    void Start()
-    {
-        Debug.Log("Trying to spawn Smelter...");
-        var obj = EntityManager.Instance.SpawnEntity("Smelter", Vector3.zero);
+    [SerializeField] private EntityManager entityManager
 
-        if (obj == null)
-            Debug.LogWarning("Spawn failed!");
-        else
-            Debug.Log("Spawn successful!");
+    private void Start()
+    {
+        if (entityManager == null)
+        {
+            Debug.LogError("EntityManager reference not set in TestSpawner!");
+            return;
+        }
+
+        entityManager.SpawnEntity("Smelter", new Vector3(0, 0, 0));
     }
 }

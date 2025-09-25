@@ -3,33 +3,21 @@ using System.Collections.Generic;
 
 public class EntityManager : MonoBehaviour
 {
-    public static EntityManager Instance { get; private set; }
-
+    [SerializeField] private string resourcesPath = "Entities"; // Pfad in Resources
     private Dictionary<string, GameEntityData> entities = new Dictionary<string, GameEntityData>();
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject); 
-        LoadAllEntities();
-    }
 
     private void LoadAllEntities()
     {
-        GameEntityData[] loadedEntities = Resources.LoadAll<GameEntityData>("Entities");
+        GameEntityData[] loadedEntities = Resources.LoadAll<GameEntityData>(resourcesPath);
+
         foreach (var entity in loadedEntities)
         {
             if (!entities.ContainsKey(entity.name))
                 entities.Add(entity.name, entity);
         }
 
-        Debug.Log($"Loaded {entities.Count} entities from Resources/Entities/");
+        Debug.Log($"Loaded {entities.Count} entities from Resources/{resourcesPath}/");
     }
 
     public GameEntityData GetEntity(string entityName)
