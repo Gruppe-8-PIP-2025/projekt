@@ -3,7 +3,7 @@ using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
 /// <author>
-/// Can Özbal (canoezbal@gmail.com)
+/// Can Özbal (canoezbal@gmail1.com)
 /// </author>
 /// <summary>
 /// Provides utility methods for handling the cursor in Unity, such as:

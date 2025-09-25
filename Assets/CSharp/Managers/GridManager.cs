@@ -27,15 +27,18 @@ public class GridManager : MonoBehaviour
   /// automatically. -Maria</i>
   /// </remarks>
   [SerializeField] private GameObject previewPlane;
-  #endregion
+  [SerializeField] private EntityManager entityManager;
 
 
-  #region Properties
-  /// <summary>
-  /// Describes the size and position of the grid in unity's scene coordinates.
-  /// </summary>
-  /// <remarks><b>WARNING:</b> <i>Y here is Z in Unity!</i></remarks>
-  public RectangleF Boundary { get; private set; }
+    #endregion
+
+
+    #region Properties
+    /// <summary>
+    /// Describes the size and position of the grid in unity's scene coordinates.
+    /// </summary>
+    /// <remarks><b>WARNING:</b> <i>Y here is Z in Unity!</i></remarks>
+    public RectangleF Boundary { get; private set; }
 
   /// <summary>
   /// Describes the size of the grid in tiles.
@@ -405,7 +408,8 @@ public class GridManager : MonoBehaviour
   /// </summary>
   void Start()
   {
-  }
+
+    }
 
   /// <summary>
   /// Update is called once every frame.

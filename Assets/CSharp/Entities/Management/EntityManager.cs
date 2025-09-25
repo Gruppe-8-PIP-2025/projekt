@@ -1,38 +1,40 @@
 using UnityEngine;
-using System.Collections.Generic;
 
+/// <author>
+/// Can Özbal (canoezbal@gmail1.com)
+/// </author>
+/// <summary>
+/// Manages spawning and references for entities in the scene.
+/// </summary>
 public class EntityManager : MonoBehaviour
 {
-    [SerializeField] private string resourcesPath = "Entities"; // Pfad in Resources
-    private Dictionary<string, GameEntityData> entities = new Dictionary<string, GameEntityData>();
+    [SerializeField] private GameObject smelterPrefab;
+    [SerializeField] private string buildingType = "Smelter";
 
-
-    private void LoadAllEntities()
+    /// <summary>
+    /// Internal spawn method. Only called by wrapper methods.
+    /// </summary>
+    /// <param name="entityName">Name of the entity to spawn.</param>
+    /// <param name="position">World position to spawn at.</param>
+    private void SpawnEntityInternal(string entityName, Vector3 position)
     {
-        GameEntityData[] loadedEntities = Resources.LoadAll<GameEntityData>(resourcesPath);
-
-        foreach (var entity in loadedEntities)
-        {
-            if (!entities.ContainsKey(entity.name))
-                entities.Add(entity.name, entity);
-        }
-
-        Debug.Log($"Loaded {entities.Count} entities from Resources/{resourcesPath}/");
+        if (entityName == "Smelter" && smelterPrefab != null)
+            Instantiate(smelterPrefab, position, Quaternion.identity);
+        else
+            Debug.LogWarning($"Cannot spawn entity: {entityName}");
     }
 
-    public GameEntityData GetEntity(string entityName)
+    /// <summary>
+    /// Spawns a Smelter entity at the given position.
+    /// </summary>
+    /// <param name="position">World position to spawn the Smelter.</param>
+    public void SpawnSmelter(Vector3 position)
     {
-        entities.TryGetValue(entityName, out GameEntityData entity);
-        return entity;
+        SpawnEntityInternal("Smelter", position);
     }
 
-    public GameObject SpawnEntity(string entityName, Vector3 position, Transform parent = null)
-    {
-        var entityData = GetEntity(entityName);
-        if (entityData != null)
-            return EntitySpawner.SpawnEntity(entityData, position, parent);
-
-        Debug.LogWarning($"Entity {entityName} not found.");
-        return null;
-    }
+    /// <summary>
+    /// Returns the type of building this manager spawns.
+    /// </summary>
+    public string BuildingType => buildingType;
 }

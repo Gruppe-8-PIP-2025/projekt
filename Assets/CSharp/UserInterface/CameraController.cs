@@ -6,7 +6,7 @@ using static UnityEngine.InputSystem.InputAction;
 using System;
 
 /// <author>
-/// [Can Özbal] ([canoezbal@gmail.com])
+/// [Can Özbal] ([canoezbal@gmail1.com])
 ///</author>
 /// <summary>
 /// Controls camera movement, zoom, and constraints relative to a map in Unity.

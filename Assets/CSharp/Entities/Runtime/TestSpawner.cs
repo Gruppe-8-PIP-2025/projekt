@@ -1,9 +1,22 @@
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
+/// <author>
+/// Can Özbal (canoezbal@gmail1.com)
+/// </author>
+/// <summary>
+/// Example script for spawning entities using an EntityManager reference.
+/// </summary>
 public class TestSpawner : MonoBehaviour
 {
-    [SerializeField] private EntityManager entityManager
+    /// <summary>
+    /// Reference to the EntityManager used to spawn entities.
+    /// </summary>
+    [SerializeField] private EntityManager entityManager;
 
+    /// <summary>
+    /// Called on the first frame. Spawns a test Smelter entity.
+    /// </summary>
     private void Start()
     {
         if (entityManager == null)
@@ -12,6 +25,6 @@ public class TestSpawner : MonoBehaviour
             return;
         }
 
-        entityManager.SpawnEntity("Smelter", new Vector3(0, 0, 0));
+        entityManager.SpawnSmelter(Vector3.zero);
     }
 }
