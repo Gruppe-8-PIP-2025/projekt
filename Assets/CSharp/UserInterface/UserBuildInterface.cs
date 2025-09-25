@@ -15,55 +15,51 @@ using static UnityEngine.InputSystem.InputAction;
 /// Object providing control and configuration of the user interface used for
 /// gameplay aspects such as building.
 /// </summary>
-public class UserBuildInterface : MonoBehaviour
+public partial class UserBuildInterface : MonoBehaviour
 {
-   #region Unity Editor Fields
+  #region Unity Editor Fields
 
-   [Header("Gameplay")]
-   /// <summary>The buildables available to the player.</summary>
-   [SerializeField] private List<BuildableEntry> availableBuildables;
-   
-   [Header("Prefabs")]
-   /// <summary>The prefab used to create the buildables buttons.</summary>
-   [SerializeField] private GameObject builtableButtonPrefab;
-   
-   [Header("Interface Components")]
-   /// <summary>The GameObject representing the buildables panel.</summary>
-   [SerializeField] private GameObject buildablesPanel;
-   
-   /// <summary>The components of the interface relevant to CursorOnInterface.</summary>
-   [SerializeField] private List<GameObject> buildInterfaceComponents;
-   
-   [Header("PopUp Text UI")]
-   [SerializeField] private CanvasGroup popUpCanvasGroup;
-   [SerializeField] private TextMeshProUGUI popUpLabel;
-   [SerializeField] private float fadeDuration = 0.35f;
+  [Header("Gameplay")]
+  /// <summary>The buildables available to the player.</summary>
+  [SerializeField] private List<BuildableEntry> availableBuildables;
+
+  [Header("Prefabs")]
+  /// <summary>The prefab used to create the buildables buttons.</summary>
+  [SerializeField] private GameObject builtableButtonPrefab;
+
+  [Header("Interface Components")]
+  /// <summary>The GameObject representing the buildables panel.</summary>
+  [SerializeField] private GameObject buildablesPanel;
+
+  /// <summary>The components of the interface relevant to CursorOnInterface.</summary>
+  [SerializeField] private List<GameObject> buildInterfaceComponents;
+
+  [Header("PopUp Text UI")]
+  [SerializeField] private TextMeshProUGUI popUpLabel;
+  [SerializeField] private float fadeDuration = 0.35f;
 
   #endregion
 
 
   #region Private Fields
 
-     /// <summary>A list of the buildable buttons as their top-level GameObjects.</summary>
-     private List<GameObject> _buildableButtons;
+  /// <summary>A list of the buildable buttons as their top-level GameObjects.</summary>
+  private List<GameObject> _buildableButtons;
 
-     /// <summary>
-     /// </summary>
-     private ActivePopUp _activePopUp;
-     private List<(string text, Color color, TimeSpan duration)> _popUpQueue;
-     private float _popUpFadeTimer;
-     private bool _popUpFadingIn;
-     private bool _popUpFadingOut;
+  /// <summary>
+  /// </summary>
+  private ActivePopUp _activePopUp;
+  private Queue<(string text, Color color, TimeSpan duration)> _popUpQueue;
 
-    #endregion
+  #endregion
 
 
-    #region Public Properties
-    /// <summary>
-    /// Returns true if the mouse cursor is hovering over a component of this
-    /// interface.
-    /// </summary>
-    public bool CursorOnInterface
+  #region Public Properties
+  /// <summary>
+  /// Returns true if the mouse cursor is hovering over a component of this
+  /// interface.
+  /// </summary>
+  public bool CursorOnInterface
   {
     get
     {
@@ -78,11 +74,16 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-   #region Control Methods
+  #region Private Properties
+  /// <summary>Whether or not the popup messager system is ready to fire another message.</summary>
+  private bool ReadyToFirePopUp => _popUpQueue.Count != 0 && _activePopUp == null;
+  #endregion
+
+
+  #region Control Methods
   /// <summary>Toggles the active state of the Buildables Panel.</summary>
   public void ToggleBuildablesPanel()
   {
-    Debug.Log("Ping");
     buildablesPanel.SetActive(!buildablesPanel.activeSelf);
   }
 
@@ -93,7 +94,7 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-   #region ScriptableObject Handling
+  #region ScriptableObject Handling
   /// <summary>
   /// Creates a button with values derived from the BuildableScriptableObject's
   /// properties and attaches a function that initiates the build process to the
@@ -179,7 +180,45 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-   #region MonoBehavior
+  #region PopUpHandling
+  /// <summary>
+  /// Enqueues a new message with the given parameters to be fired at the next
+  /// available opportunity.
+  /// <br/>If an identical message is currently being fired, instead the duration
+  /// of that message will be extended by a fractional (0.3334f) amount.
+  /// </summary>
+  /// <param name="text">the text of the popup message</param>
+  /// <param name="color">the color of the popup message</param>
+  /// <param name="duration">the duration of the popup message</param>
+  public void EnqueuePopUp(string text, Color color, TimeSpan duration)
+  {
+    if (_activePopUp != null && _activePopUp.Text == text)
+    {
+      _activePopUp.ExtendDuration(duration * 0.3334f);
+    }
+    else
+    {
+      _popUpQueue.Enqueue((text, color, duration));
+
+      if (ReadyToFirePopUp)
+        FireNextPopUp();
+    }
+  }
+
+  /// <summary>
+  /// Dequeues the next available popup message and fires off a coroutine to
+  /// display it.
+  /// </summary>
+  private void FireNextPopUp()
+  {
+    (string Text, Color Color, TimeSpan Duration) nextPopUp = _popUpQueue.Dequeue();
+
+    StartCoroutine(nameof(FirePopUp), new ActivePopUp(nextPopUp.Text, nextPopUp.Color, nextPopUp.Duration));
+  }
+  #endregion
+
+
+  #region MonoBehavior
   /// <summary>
   /// Awake is called once after the MonoBehaviour is created, before Start is
   /// called and will be called even if the MonoBehavior is disabled.
@@ -187,6 +226,8 @@ public class UserBuildInterface : MonoBehaviour
   void Awake()
   {
     _buildableButtons = new();
+    _popUpQueue = new();
+    popUpLabel.alpha = 0.0f;
     buildablesPanel.SetActive(false);
   }
 
@@ -208,4 +249,28 @@ public class UserBuildInterface : MonoBehaviour
   }
   #endregion
 
+
+  #region Test/Debug
+  /*
+  private void PreparePopUpTest()
+  {
+    _testQueue.Enqueue(("Hello World!", Color.magenta, new TimeSpan(0, 0, 3)));
+    _testQueue.Enqueue(("Hello World!", Color.magenta, new TimeSpan(0, 0, 3)));
+    _testQueue.Enqueue(("Hello World!", Color.magenta, new TimeSpan(0, 0, 3)));
+    _testQueue.Enqueue(("Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development. Its purpose is to permit a page layout to be designed, independently of the copy that will subsequently populate it, or to demonstrate various fonts of a typeface without meaningful text that could be distracting. Lorem ipsum is typically a corrupted version of De finibus bonorum et malorum, a 1st-century BC text by the Roman statesman and philosopher Cicero, with words altered, added, and removed to make it nonsensical and improper Latin.", Color.green, new TimeSpan(0, 0, 2)));
+  }
+
+  private Queue<(string, Color, TimeSpan)> _testQueue = new();
+  private bool _lastTestInputValue = false;
+  public void TestPopUpText(CallbackContext ctx)
+  {
+    if (!_lastTestInputValue && ctx.ReadValueAsButton())
+    {
+      var testQueueItem = _testQueue.Dequeue();
+      EnqueuePopUp(testQueueItem.Item1, testQueueItem.Item2, testQueueItem.Item3);
+    }
+    _lastTestInputValue = ctx.ReadValueAsButton();
+  }
+  */
+  #endregion
 }
