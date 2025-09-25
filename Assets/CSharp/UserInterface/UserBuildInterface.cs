@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -16,34 +17,53 @@ using static UnityEngine.InputSystem.InputAction;
 /// </summary>
 public class UserBuildInterface : MonoBehaviour
 {
-  #region Unity Editor Fields
-  [Header("Gameplay")]
-  /// <summary>The buildables available to the player.</summary>
-  [SerializeField] private List<BuildableEntry> availableBuildables;
+   #region Unity Editor Fields
 
-  [Header("Prefabs")]
-  /// <summary>The prefab used to create the buildables buttons.</summary>
-  [SerializeField] private GameObject builtableButtonPrefab;
+   [Header("Gameplay")]
+   /// <summary>The buildables available to the player.</summary>
+   [SerializeField] private List<BuildableEntry> availableBuildables;
+   
+   [Header("Prefabs")]
+   /// <summary>The prefab used to create the buildables buttons.</summary>
+   [SerializeField] private GameObject builtableButtonPrefab;
+   
+   [Header("Interface Components")]
+   /// <summary>The GameObject representing the buildables panel.</summary>
+   [SerializeField] private GameObject buildablesPanel;
+   
+   /// <summary>The components of the interface relevant to CursorOnInterface.</summary>
+   [SerializeField] private List<GameObject> buildInterfaceComponents;
+   
+   [Header("PopUp Text UI")]
+   [SerializeField] private CanvasGroup popUpCanvasGroup;
+   [SerializeField] private TextMeshProUGUI popUpLabel;
+   [SerializeField] private float fadeDuration = 0.35f;
 
-  [Header("Interface Components")]
-  /// <summary>The GameObject representing the buildables panel.</summary>
-  [SerializeField] private GameObject buildablesPanel;
-
-  /// <summary>The components of the interface relevant to CursorOnInterface.</summary>
-  [SerializeField] private List<GameObject> buildInterfaceComponents;
   #endregion
+
 
   #region Private Fields
-  /// <summary>A list of the buildable buttons as their top-level GameObjects.</summary>
-  private List<GameObject> _buildableButtons;
-  #endregion
 
-  #region Public Properties
-  /// <summary>
-  /// Returns true if the mouse cursor is hovering over a component of this
-  /// interface.
-  /// </summary>
-  public bool CursorOnInterface
+     /// <summary>A list of the buildable buttons as their top-level GameObjects.</summary>
+     private List<GameObject> _buildableButtons;
+
+     /// <summary>
+     /// </summary>
+     private ActivePopUp _activePopUp;
+     private List<(string text, Color color, TimeSpan duration)> _popUpQueue;
+     private float _popUpFadeTimer;
+     private bool _popUpFadingIn;
+     private bool _popUpFadingOut;
+
+    #endregion
+
+
+    #region Public Properties
+    /// <summary>
+    /// Returns true if the mouse cursor is hovering over a component of this
+    /// interface.
+    /// </summary>
+    public bool CursorOnInterface
   {
     get
     {
@@ -58,7 +78,7 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-  #region Control Methods
+   #region Control Methods
   /// <summary>Toggles the active state of the Buildables Panel.</summary>
   public void ToggleBuildablesPanel()
   {
@@ -73,7 +93,7 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-  #region ScriptableObject Handling
+   #region ScriptableObject Handling
   /// <summary>
   /// Creates a button with values derived from the BuildableScriptableObject's
   /// properties and attaches a function that initiates the build process to the
@@ -159,7 +179,7 @@ public class UserBuildInterface : MonoBehaviour
   #endregion
 
 
-  #region MonoBehavior
+   #region MonoBehavior
   /// <summary>
   /// Awake is called once after the MonoBehaviour is created, before Start is
   /// called and will be called even if the MonoBehavior is disabled.
@@ -187,4 +207,5 @@ public class UserBuildInterface : MonoBehaviour
 
   }
   #endregion
+
 }
