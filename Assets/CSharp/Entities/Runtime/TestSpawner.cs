@@ -25,6 +25,6 @@ public class TestSpawner : MonoBehaviour
             return;
         }
 
-        entityManager.SpawnSmelter(Vector3.zero);
+        
     }
 }

@@ -1,40 +1,47 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
-/// <author>
-/// Can �zbal (canoezbal@gmail1.com)
-/// </author>
-/// <summary>
-/// Manages spawning and references for entities in the scene.
-/// </summary>
 public class EntityManager : MonoBehaviour
 {
-    [SerializeField] private GameObject smelterPrefab;
-    [SerializeField] private string buildingType = "Smelter";
+    [Header("Resources Path (relative to Resources/)")]
+    [SerializeField] private string resourcesPath = "Entities";
 
-    /// <summary>
-    /// Internal spawn method. Only called by wrapper methods.
-    /// </summary>
-    /// <param name="entityName">Name of the entity to spawn.</param>
-    /// <param name="position">World position to spawn at.</param>
-    private void SpawnEntityInternal(string entityName, Vector3 position)
+    private Dictionary<string, GameObject> prefabLibrary = new Dictionary<string, GameObject>();
+
+    private void Awake()
     {
-        if (entityName == "Smelter" && smelterPrefab != null)
-            Instantiate(smelterPrefab, position, Quaternion.identity);
+        LoadAllPrefabs();
+    }
+
+    private void LoadAllPrefabs()
+    {
+        prefabLibrary.Clear();
+
+        GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>(resourcesPath);
+
+        foreach (var prefab in loadedPrefabs)
+        {
+            if (!prefabLibrary.ContainsKey(prefab.name))
+            {
+                prefabLibrary.Add(prefab.name, prefab);
+                Debug.Log($"[EntityManager] Loaded prefab: {prefab.name}");
+            }
+        }
+
+        Debug.Log($"[EntityManager] ✅ Loaded {prefabLibrary.Count} prefabs from Resources/{resourcesPath}/");
+    }
+
+    public void SpawnEntity(string entityName, Vector3 position)
+    {
+        if (prefabLibrary.TryGetValue(entityName, out var prefab))
+        {
+            Instantiate(prefab, position, Quaternion.identity);
+            Debug.Log($"[EntityManager] Spawned '{entityName}' at {position}");
+        }
         else
-            Debug.LogWarning($"Cannot spawn entity: {entityName}");
+        {
+            Debug.LogError($"[EntityManager] ❌ Prefab '{entityName}' not found in library! " +
+                           $"(Make sure it's in Resources/{resourcesPath}/)");
+        }
     }
-
-    /// <summary>
-    /// Spawns a Smelter entity at the given position.
-    /// </summary>
-    /// <param name="position">World position to spawn the Smelter.</param>
-    public void SpawnSmelter(Vector3 position)
-    {
-        SpawnEntityInternal("Smelter", position);
-    }
-
-    /// <summary>
-    /// Returns the type of building this manager spawns.
-    /// </summary>
-    public string BuildingType => buildingType;
 }
