@@ -1005,7 +1005,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7fc05027151a114aa9b0bc8c6097695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   resourcesPath: Entities/Buildings
+=======
+  smelterPrefab: {fileID: 0}
+  buildingType: Smelter
+>>>>>>> 395e6037e2644873d5fe77a6d0f8c33d709a606a
 --- !u!1 &1805027164
 GameObject:
   m_ObjectHideFlags: 0
