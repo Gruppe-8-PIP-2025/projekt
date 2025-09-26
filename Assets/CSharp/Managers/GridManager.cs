@@ -462,11 +462,14 @@ public class GridManager : MonoBehaviour
 
   public void OnClickPlaceTestCube(CallbackContext ctx)
   {
-    if (_lastPlaceInputState == true || ctx.ReadValueAsButton() == false)
-    {
-      _lastPlaceInputState = ctx.ReadValueAsButton();
+    if (WorldManager.Instance.UserBuildInterface.CursorOnInterface)
       return;
-    }
+
+    if (_lastPlaceInputState == true || ctx.ReadValueAsButton() == false)
+      {
+        _lastPlaceInputState = ctx.ReadValueAsButton();
+        return;
+      }
 
     GridTile position = GetTileAtCursor();
 
@@ -489,7 +492,7 @@ public class GridManager : MonoBehaviour
       TestPlaceDemoPlaceable(demoPlaceable, position);
 
     }
-    
+
     if (demoPlaceablesQueue.Count == 0)
     {
       foreach (DemoPlaceableScriptableObject entry in demoPlaceables)

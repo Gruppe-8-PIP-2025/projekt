@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BubbleExtractorTest 1
   m_EditorClassIdentifier: 
   localizedName: Bubble Extractor I
-  menuIcon: {fileID: 2800000, guid: 175b694565ca98149b1ef2fe648d4153, type: 3}
+  menuIcon: {fileID: 2800000, guid: 2dfd798ae17891d48955e67a15b9a141, type: 3}
