@@ -31,18 +31,21 @@ public partial class WorldManager : MonoBehaviour
   [Header("Menus and Screens")]
   /// <summary>Field containing the GameObject that represents the LoadingScreen.</summary>
   [SerializeField] private GameObject loadingScreen;
-
-  /// <summary>Field containing the MenuSystem to handle, display and navigate between menu screens.</summary>
-  [SerializeField] private MenuManager menuManager;
   #endregion
 
 
   #region Properties
-  /// <summary>Field containing the GridManager meant to control and interpret the play area.</summary>
-  public MonoBehaviour GridManager { get; private set; }
+  /// <summary>Property containing the GridManager meant to control and interpret the play area.</summary>
+  public GridManager GridManager { get; private set; }
 
-  /// <summary>Field containing the CameraController to control and limit player camera movement.</summary>
-  public MonoBehaviour CameraController { get; private set; }
+  /// <summary>Property containing the MenuSystem to handle, display and navigate between menu screens.</summary>
+  public MenuManager MenuManager { get; private set; }
+
+  /// <summary></summary>
+  public UserBuildInterface UserBuildInterface { get; private set; }
+
+  /// <summary>Property containing the CameraController to control and limit player camera movement.</summary>
+  public CameraController CameraController { get; private set; }
   #endregion
 
 
@@ -71,6 +74,8 @@ public partial class WorldManager : MonoBehaviour
   {
     StartCoroutine(nameof(LoadScene), sceneName);
     AdoptGridManager();
+    AdoptMenuManager();
+    AdoptUserBuildInterface();
   }
 
   /// <summary>
@@ -79,6 +84,14 @@ public partial class WorldManager : MonoBehaviour
   /// <typeparam name="GridManager"></typeparam>
   private void AdoptGridManager() =>
     GridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
+
+    
+  private void AdoptMenuManager() =>
+    MenuManager = GameObject.Find("MenuManager").GetComponent<MenuManager>();
+
+    
+  private void AdoptUserBuildInterface() =>
+    UserBuildInterface = GameObject.Find("UserBuildInterface").GetComponent<UserBuildInterface>();
   #endregion
 
 
@@ -130,6 +143,8 @@ public partial class WorldManager : MonoBehaviour
   void Start()
   {
     AdoptGridManager();
+    AdoptMenuManager();
+    AdoptUserBuildInterface();
   }
 
   /// <summary>
