@@ -7,7 +7,7 @@ public class TestPlaceable : MonoBehaviour, IPlaceable
 
   public Placeables Category => category;
   public Transform Transform => gameObject.transform;
-  public Vector2 Dimensions => dimensions;
+  public Vector2 Dimensions => dimensions != default ? dimensions : new Vector2(1.0f, 1.0f);
 
   public GameObject ComponentOf => gameObject;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 /// <author>Maria Wickes (maria.lindling@protonmail.com)</author>
 /// <summary>
@@ -13,6 +14,11 @@ public class GridTile : MonoBehaviour
   /// The in-scene GameObject (plane) that represents the GridTile itself.
   /// </summary>
   [SerializeField] private GameObject plane;
+
+  /// <summary>
+  /// 
+  /// </summary>
+  [SerializeField] private Texture tileTexture;
   #endregion
 
 
@@ -173,6 +179,18 @@ public class GridTile : MonoBehaviour
   #endregion
 
 
+  #region Highlighting
+  public void ShowBorder()
+  {
+    plane.GetComponent<MeshRenderer>().enabled = true;
+  }
+  public void HideBorder()
+  {
+    plane.GetComponent<MeshRenderer>().enabled = false;
+  }
+  #endregion
+
+
   #region MonoBehavior
   /// <summary>
   /// Awake is called once before the first execution of Update and Start after
@@ -183,6 +201,9 @@ public class GridTile : MonoBehaviour
   {
     Contains = new();
     Intersects = new();
+    plane.GetComponent<Renderer>().material.mainTexture = tileTexture;
+    //plane.transform.position += new Vector3(0.0f,2.0f,0.0f);
+    HideBorder();
   }
   #endregion
 }

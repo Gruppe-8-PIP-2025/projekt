@@ -30,6 +30,11 @@ public class GridManager : MonoBehaviour
   #endregion
 
 
+  #region Private Fields
+  private GridTile _lastHighlighted;
+  #endregion
+
+
   #region Properties
   /// <summary>
   /// Describes the size and position of the grid in unity's scene coordinates.
@@ -213,9 +218,14 @@ public class GridManager : MonoBehaviour
     }
     else
     {
-      Debug.LogWarning("Raycast for GetTileAtCursor failed to hit a GridTile.");
+      //Debug.LogWarning("Raycast for GetTileAtCursor failed to hit a GridTile.");
       return null;
     }
+  }
+  public bool TryGetTileAtCursor(out GridTile position)
+  {
+    position = GetTileAtCursor();
+    return position != null;
   }
 
   /// <summary>
@@ -358,6 +368,32 @@ public class GridManager : MonoBehaviour
   #endregion
 
 
+  #region Input Handling
+  public void OnLook(CallbackContext ctx)
+  {
+    if (TryGetTileAtCursor(out GridTile position))
+    {
+      if (position != _lastHighlighted)
+      {
+      if (_lastHighlighted != null)
+        _lastHighlighted.HideBorder();
+
+        position.ShowBorder();
+        _lastHighlighted = position;
+      }
+      // if position is the last highlighted, then nothing new happens
+    }
+    else
+    {
+      if (_lastHighlighted != null)
+        _lastHighlighted.HideBorder();
+
+      _lastHighlighted = null;
+    }
+  }
+  #endregion
+
+
   #region MonoBehavior
   /// <summary>
   /// Awake is called once before the first execution of Update and Start after
@@ -417,41 +453,85 @@ public class GridManager : MonoBehaviour
 
 
   #region Test/Debug
-  [SerializeField] private GameObject testCubePrefab;
+  [SerializeField] private List<DemoPlaceableScriptableObject> fixedPlaceables;
+  [SerializeField] private List<DemoPlaceableScriptableObject> demoPlaceables;
+  private Queue<DemoPlaceableScriptableObject> demoPlaceablesQueue;
   [SerializeField] private GameObject assetPlacementBox;
-  private IPlaceable testCube;
-  private bool testCubeExists = false;
+
+  private bool _lastPlaceInputState = false;
+
   public void OnClickPlaceTestCube(CallbackContext ctx)
   {
+    if (WorldManager.Instance.UserBuildInterface.CursorOnInterface)
+      return;
+
+    if (_lastPlaceInputState == true || ctx.ReadValueAsButton() == false)
+      {
+        _lastPlaceInputState = ctx.ReadValueAsButton();
+        return;
+      }
+
     GridTile position = GetTileAtCursor();
 
     if (position == null)
     {
-      Debug.LogWarning($"OnClickPlaceTestCube: position should be a GridTile, but is null.");
+      WorldManager.Instance.UserBuildInterface.EnqueuePopUp(
+        "Object not placeable off-grid.",
+        UnityEngine.Color.red,
+        new TimeSpan((long)(TimeSpan.TicksPerSecond * 2.5f))
+      );
       return;
     }
 
-    if (!testCubeExists)
+
+    if (demoPlaceablesQueue.TryDequeue(out DemoPlaceableScriptableObject demoPlaceable))
     {
-      testCube = Instantiate(testCubePrefab).GetComponent<TestPlaceable>();
-      testCubeExists = true;
+      if (demoPlaceable.GameObject != null)
+        Destroy(demoPlaceable.GameObject);
+
+      TestPlaceDemoPlaceable(demoPlaceable, position);
+
     }
 
-    RemovePlaceable(testCube);
-    AddPlaceable(testCube, position);
+    if (demoPlaceablesQueue.Count == 0)
+    {
+      foreach (DemoPlaceableScriptableObject entry in demoPlaceables)
+        demoPlaceablesQueue.Enqueue(entry);
+    }
 
-    testCube.ComponentOf.transform.SetParent(position.gameObject.transform);
+    _lastPlaceInputState = ctx.ReadValueAsButton();
   }
+
+  private void TestPlaceDemoPlaceable(DemoPlaceableScriptableObject demoPlaceable,GridTile position)
+  {
+    demoPlaceable.GameObject = Instantiate(demoPlaceable.Asset);
+    TestPlaceable demoTestPlaceable = demoPlaceable.GameObject.AddComponent<TestPlaceable>();
+    RemovePlaceable(demoTestPlaceable);
+    AddPlaceable(demoTestPlaceable, position);
+    demoPlaceable.SetGridTile(position);
+    demoPlaceable.GameObject.transform.SetParent(position.gameObject.transform);
+  }
+
   private void TestAwake()
   {
-    if (!testCubeExists)
+    demoPlaceablesQueue = new();
+
+    foreach (DemoPlaceableScriptableObject entry in fixedPlaceables)
     {
-      testCube = Instantiate(testCubePrefab).GetComponent<TestPlaceable>();
-      testCube.ComponentOf.transform.SetParent(assetPlacementBox.transform);
-      testCubeExists = true;
+      TestPlaceDemoPlaceable(entry, GetTileByGridCoordinates(entry.GridTile));
     }
 
-    AddPlaceable(testCube, GetTileByGridCoordinates(new Vector2(Dimensions.x/3, Dimensions.y/3)));
+    foreach (DemoPlaceableScriptableObject entry in demoPlaceables)
+    {
+      if (!entry.GridTile.Equals(new Vector2(0.0f, 0.0f)))
+      {
+        TestPlaceDemoPlaceable(entry, GetTileByGridCoordinates(entry.GridTile));
+      }
+      else
+      {
+        demoPlaceablesQueue.Enqueue(entry);
+      }
+    }
   }
   #endregion
 }

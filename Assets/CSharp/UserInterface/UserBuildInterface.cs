@@ -34,6 +34,8 @@ public partial class UserBuildInterface : MonoBehaviour
   /// <summary>The components of the interface relevant to CursorOnInterface.</summary>
   [SerializeField] private List<GameObject> buildInterfaceComponents;
 
+  [SerializeField] private List<ButtonConfig> buttonConfigs;
+
   [Header("PopUp Text UI")]
   [SerializeField] private TextMeshProUGUI popUpLabel;
   [SerializeField] private float fadeDuration = 0.35f;
@@ -63,12 +65,11 @@ public partial class UserBuildInterface : MonoBehaviour
   {
     get
     {
-      return buildInterfaceComponents.Select(bic =>
-        bic.activeSelf == true &&
+      return buildInterfaceComponents.Any(bic => bic.activeSelf == true &&
         RectTransformUtility.RectangleContainsScreenPoint(
-          bic.GetComponent<RectTransform>(),
-          Mouse.current.position.ReadValue())
-        ).Any();
+        bic.GetComponent<RectTransform>(),
+        Mouse.current.position.ReadValue())
+      );
     }
   }
   #endregion
@@ -229,6 +230,7 @@ public partial class UserBuildInterface : MonoBehaviour
     _popUpQueue = new();
     popUpLabel.alpha = 0.0f;
     buildablesPanel.SetActive(false);
+    buttonConfigs.ForEach(cfg => cfg.Apply());
   }
 
   /// <summary>
