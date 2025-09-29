@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizedName: DemoBelt_TSplit
   asset: {fileID: 919132149155446097, guid: a14644df0c435c3409b687f6efc0a171, type: 3}
+  positionAdjustment: {x: 0, y: 2, z: 0}
+  rotationAdjustment: {x: 0.008726535, y: 0, z: 0, w: 0.9999619}
   gridTile: {x: 0, y: 0}
