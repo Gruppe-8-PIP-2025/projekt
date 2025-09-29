@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizedName: DemoAssembler
   asset: {fileID: 919132149155446097, guid: 3348f7c6116323448a8a465a5859f0c0, type: 3}
+  positionAdjustment: {x: 0, y: 2, z: 0}
+  rotationAdjustment: {x: 0.008726535, y: 0, z: 0, w: 0.9999619}
   gridTile: {x: 0, y: 0}

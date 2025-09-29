@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
@@ -508,8 +509,7 @@ public class GridManager : MonoBehaviour
     TestPlaceable demoTestPlaceable = demoPlaceable.GameObject.AddComponent<TestPlaceable>();
     RemovePlaceable(demoTestPlaceable);
     AddPlaceable(demoTestPlaceable, position);
-    demoPlaceable.SetGridTile(position);
-    demoPlaceable.GameObject.transform.SetParent(position.gameObject.transform);
+    demoPlaceable.InstantiateTo(position);
   }
 
   private void TestAwake()
@@ -519,6 +519,7 @@ public class GridManager : MonoBehaviour
     foreach (DemoPlaceableScriptableObject entry in fixedPlaceables)
     {
       TestPlaceDemoPlaceable(entry, GetTileByGridCoordinates(entry.GridTile));
+      EditorUtility.SetDirty(entry);
     }
 
     foreach (DemoPlaceableScriptableObject entry in demoPlaceables)

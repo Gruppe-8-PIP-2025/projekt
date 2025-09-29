@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6142b1865a1a8e54d82e561cd8e109e1, type: 3}
+  m_Name: DemoPipelineStraight_00
+  m_EditorClassIdentifier: 
+  localizedName: PipelineStraight
+  asset: {fileID: 919132149155446097, guid: 9553338b5d2e2344b9bb4f2c0b2af2fb, type: 3}
+  positionAdjustment: {x: 0, y: 2, z: 0}
+  rotationAdjustment: {x: 0.008726535, y: 0, z: 0, w: 0.9999619}
+  gridTile: {x: 0, y: 0}
+  unitLength: 10
